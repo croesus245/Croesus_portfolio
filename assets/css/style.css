@@ -867,39 +867,36 @@
     border-radius: inherit;
   }
   
-  /**
+ /**
  * #certifications
  */
 
 .certifications {
   margin-bottom: 15px;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Prevent vertical scrolling */
+  white-space: nowrap; /* Ensure items stay in a single row */
+  scroll-behavior: smooth; /* Smooth scrolling effect */
 }
 
 .certifications-list {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 15px;
-  margin: 0 -15px;
-  padding: 25px;
-  padding-bottom: 25px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  overscroll-behavior-inline: contain;
-  scroll-snap-type: inline mandatory;
-  scroll-padding-inline: 25px;
+  flex-wrap: nowrap; /* Prevent wrapping of items */
+  gap: 15px; /* Spacing between items */
+  padding: 25px; /* Adjust padding as needed */
 }
 
 .certifications-item {
-  min-width: 50%;
-  scroll-snap-align: start;
+  flex: 0 0 auto; /* Prevent items from shrinking or growing */
+  width: calc(100% / 3); /* Adjust item width; this example shows 3 items in view */
+  scroll-snap-align: center; /* Snap items to the center when scrolling */
 }
 
 .certifications-item img {
   width: 100%;
-  height: auto; /* Ensures images maintain aspect ratio */
-  border-radius: 8px; /* Add rounded corners if desired */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
   filter: grayscale(1);
   transition: var(--transition-1);
 }
@@ -908,7 +905,7 @@
   filter: grayscale(0);
 }
 
-  
+   */
   
   
   
