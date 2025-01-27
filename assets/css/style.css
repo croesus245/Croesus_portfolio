@@ -867,6 +867,47 @@
     border-radius: inherit;
   }
   
+  /**
+ * #certifications
+ */
+
+.certifications {
+  margin-bottom: 15px;
+}
+
+.certifications-list {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 15px;
+  margin: 0 -15px;
+  padding: 25px;
+  padding-bottom: 25px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scroll-padding-inline: 25px;
+}
+
+.certifications-item {
+  min-width: 50%;
+  scroll-snap-align: start;
+}
+
+.certifications-item img {
+  width: 100%;
+  height: auto; /* Ensures images maintain aspect ratio */
+  border-radius: 8px; /* Add rounded corners if desired */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  filter: grayscale(1);
+  transition: var(--transition-1);
+}
+
+.certifications-item img:hover {
+  filter: grayscale(0);
+}
+
   
   
   
