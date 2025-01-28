@@ -346,11 +346,8 @@
 
                 <div class="testimonials-text" data-testimonials-text>
                   <p>
-                    Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
-                    lot of experience
-                    and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
-                    consectetur adipiscing
-                    elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
+                    "Working with Croesus was an absolute pleasure. He demonstrated exceptional professionalism, skill, and dedication throughout the entire project. Croesus paid close attention to every detail, ensuring the job was completed to perfection and ahead of schedule. His ability to communicate clearly and keep me updated every step of the way gave me complete peace of mind. The results were outstanding and exceeded my expectations. I highly recommend Croesus to anyone in need of reliable, high-quality work.
+                     I’ll definitely turn to him again for future projects!"
                   </p>
                 </div>
 
@@ -395,7 +392,7 @@
           <ul class="clients-list has-scrollbar">
 
             <li class="clients-item">
-              <a href="#">
+              <a href="assets\images\sidereal logo.jpg">
                 <img src="./assets/images/sidereal logo.jpg" alt="client logo">
               </a>
             </li>
@@ -492,7 +489,7 @@
               <span>2024</span>
 
               <p class="timeline-text">
-                I went to RAIN to study AIML 
+                I went to RAIN to study AIML and data analysis
               </p>
 
             </li>
@@ -642,10 +639,10 @@
 
   <div class="certifications-gallery">
     
-    <!-- <div class="certificate-item">
+    <div class="certificate-item">
       <img src="assets\images\certificate_1.jpg" alt="Certificate Title 1" class="certificate-image">
-      <p class="certificate-title">Certificate Title 1</p>
-    </div> -->
+      <p class="certificate-title">Certificate Of Completion</p>
+    </div>
 
     <!-- Certificate 2 -->
     <!-- <div class="certificate-item">
@@ -799,7 +796,7 @@
                     <ion-icon name="eye-outline"></ion-icon>
                   </div>
 
-                  <img src="./assets/images/project-3.jpg" alt="fundo" loading="lazy">
+                  <img src="./assets/images/project-4.png" alt="fundo" loading="lazy">
                 </figure>
 
                 <h3 class="project-title">Fundo</h3>
@@ -997,117 +994,6 @@
               </a>
             </li>
 
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-3.jpg" alt="Design digest #80" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">Design digest #80</h3>
-
-                  <p class="blog-text">
-                    Excepteur sint occaecat cupidatat no proident, quis nostrum exercitationem ullam corporis suscipit.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-4.jpg" alt="UI interactions of the week" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">UI interactions of the week</h3>
-
-                  <p class="blog-text">
-                    Enim ad minim veniam, consectetur adipiscing elit, quis nostrud exercitation ullamco laboris nisi.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-5.jpg" alt="The forgotten art of spacing" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">The forgotten art of spacing</h3>
-
-                  <p class="blog-text">
-                    Maxime placeat, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-6.jpg" alt="Design digest #79" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">Design digest #79</h3>
-
-                  <p class="blog-text">
-                    Optio cumque nihil impedit uo minus quod maxime placeat, velit esse cillum.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
 
           </ul>
 
@@ -1159,6 +1045,50 @@
           </form>
 
         </section>
+        <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  // Initialize EmailJS with  public key
+  emailjs.init("jzzRzTx2EHuqX3JUJ");
+
+  // Select form and elements
+  const form = document.querySelector('[data-form]');
+  const formInputs = document.querySelectorAll('[data-form-input]');
+  const submitButton = document.querySelector('[data-form-btn]');
+
+  // Enable submit button when all fields are valid
+  formInputs.forEach((input) => {
+    input.addEventListener('input', () => {
+      const allValid = Array.from(formInputs).every(input => input.value.trim() !== '');
+      submitButton.disabled = !allValid;
+    });
+  });
+
+  // Handle form submission
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Gather form data
+    const formData = new FormData(form);
+    const formValues = {
+      fullname: formData.get('fullname'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+    };
+
+    // Send email using EmailJS
+    emailjs.send("service_j8ldhiq", "template_lxkd1sw", formValues)
+      .then((response) => {
+        alert("Message sent successfully!");
+        form.reset(); // Reset the form
+        submitButton.disabled = true; // Disable the button after sending
+      })
+      .catch((error) => {
+        alert("Failed to send the message. Please try again.");
+        console.error("EmailJS Error: ", error);
+      });
+  });
+</script>
+
 
       </article>
 
