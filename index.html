@@ -268,19 +268,7 @@
 
             </li>
 
-            <!-- <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="./assets/images/icon-app.svg" alt="mobile app icon" width="40">
-              </div> -->
-
-              <!-- <div class="service-content-box">
-                <h4 class="h4 service-item-title">Mobile apps</h4>
-
-                <p class="service-item-text">
-                  Professional development of applications for iOS and Android.
-                </p>
-              </div> -->
+         
 
             </li>
 
@@ -335,7 +323,7 @@
               </div>
             </li>
 
-           item">
+           
               <div class="content-card" data-testimonials-item>
 
                 <figure class="testimonials-avatar-box">
@@ -529,41 +517,6 @@
 
               <span>2024 — Present</span>
 
-              <!-- <p class="timeline-text">
-                Nemo enim ipsam voluptatem blanditiis praesentium voluptum delenit atque corrupti, quos dolores et qvuas
-                molestias
-                exceptur.
-              </p>
-
-            </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Art director</h4>
-
-              <span>2013 — 2015</span>
-
-              <p class="timeline-text">
-                Nemo enims ipsam voluptatem, blanditiis praesentium voluptum delenit atque corrupti, quos dolores et
-                quas molestias
-                exceptur.
-              </p> -->
-
-            <!-- </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Web designer</h4>
-
-              <span>2010 — 2013</span>
-
-              <p class="timeline-text">
-                Nemo enims ipsam voluptatem, blanditiis praesentium voluptum delenit atque corrupti, quos dolores et
-                quas molestias
-                exceptur.
-              </p>
-
-            </li> -->
 
           </ol>
 
@@ -644,34 +597,18 @@
       <p class="certificate-title">Certificate Of Completion</p>
     </div>
 
-    <!-- Certificate 2 -->
-    <!-- <div class="certificate-item">
-      <img src="assets\images\certificate_2.jpg" alt="Certificate Title 2" class="certificate-image">
-      <p class="certificate-title">Certificate Title 2</p>
-    </div> -->
+   
 
-    <!-- Certificate 3 -->
-    <!-- <div class="certificate-item">
-      <img src="assets\images\certificate_3.jpg" alt="Certificate Title 3" class="certificate-image">
-      <p class="certificate-title">Certificate Title 3</p>
-    </div>
-  </div> -->
-  <!-- Certificate 4 -->
-  <!-- <div class="certificate-item">
-    <img src="assets\images\certificate_4.jpg" alt="Certificate Title 3" class="certificate-image">
-    <p class="certificate-title">Certificate Title 4</p>
-  </div>
-</div> -->
-<!-- Certificate 5 -->
+
 <div class="certificate-item">
   <img src="assets\images\certificate_5.jpg" alt="Certificate Title 3" class="certificate-image">
-  <p class="certificate-title">Certificate Title 5</p>
+  <p class="certificate-title">Certificate participation</p>
 </div>
 </div>
 <!-- Certificate 6 -->
 <div class="certificate-item">
   <img src="assets\images\certificate_6.jpg" alt="Certificate Title 3" class="certificate-image">
-  <p class="certificate-title">Certificate Title 6</p>
+  <p class="certificate-title">Yali Network</p>
 </div>
 </div>
 
@@ -806,23 +743,6 @@
               </a>
             </li>
 
-            <!-- <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="./assets/images/project-4.png" alt="brawlhalla" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">Brawlhalla</h3>
-
-                <p class="project-category">Applications</p>
-
-              </a>
-            </li> -->
 
             <li class="project-item  active" data-filter-item data-category="web design">
               <a href="#">
@@ -878,23 +798,6 @@
               </a>
             </li>
 
-            <!-- <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="./assets/images/project-8.jpg" alt="task manager" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">Task Manager</h3>
-
-                <p class="project-category">Applications</p>
-
-              </a>
-            </li> -->
 
             <li class="project-item  active" data-filter-item data-category="web development">
               <a href="#">
@@ -1045,50 +948,7 @@
           </form>
 
         </section>
-        <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script>
-  // Initialize EmailJS with  public key
-  emailjs.init("jzzRzTx2EHuqX3JUJ");
-
-  // Select form and elements
-  const form = document.querySelector('[data-form]');
-  const formInputs = document.querySelectorAll('[data-form-input]');
-  const submitButton = document.querySelector('[data-form-btn]');
-
-  // Enable submit button when all fields are valid
-  formInputs.forEach((input) => {
-    input.addEventListener('input', () => {
-      const allValid = Array.from(formInputs).every(input => input.value.trim() !== '');
-      submitButton.disabled = !allValid;
-    });
-  });
-
-  // Handle form submission
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    // Gather form data
-    const formData = new FormData(form);
-    const formValues = {
-      fullname: formData.get('fullname'),
-      email: formData.get('email'),
-      message: formData.get('message'),
-    };
-
-    // Send email using EmailJS
-    emailjs.send("service_j8ldhiq", "template_lxkd1sw", formValues)
-      .then((response) => {
-        alert("Message sent successfully!");
-        form.reset(); // Reset the form
-        submitButton.disabled = true; // Disable the button after sending
-      })
-      .catch((error) => {
-        alert("Failed to send the message. Please try again.");
-        console.error("EmailJS Error: ", error);
-      });
-  });
-</script>
-
+        
 
       </article>
 
@@ -1111,6 +971,50 @@
   -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  // Initialize EmailJS with your public key
+  emailjs.init("jzzRzTx2EHuqX3JUJ");
+
+  // Select the form, inputs, and button
+  const form = document.querySelector('[data-form]');
+  const formInputs = document.querySelectorAll('[data-form-input]');
+  const submitButton = document.querySelector('[data-form-btn]');
+
+  // Enable submit button when all fields are filled
+  formInputs.forEach((input) => {
+    input.addEventListener('input', () => {
+      const allFieldsFilled = Array.from(formInputs).every(input => input.value.trim() !== '');
+      submitButton.disabled = !allFieldsFilled;
+    });
+  });
+
+  // Handle form submission
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Gather form data
+    const formData = new FormData(form);
+    const formValues = {
+      fullname: formData.get('fullname'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+    };
+
+    // Use EmailJS to send the form data
+    emailjs.send("service_j8ldhiq", "template_lxkd1sw", formValues)
+      .then((response) => {
+        alert("Message sent successfully!");
+        form.reset(); // Reset form fields
+        submitButton.disabled = true; // Disable button after submission
+      })
+      .catch((error) => {
+        alert("Failed to send message. Please try again.");
+        console.error("EmailJS Error:", error);
+      });
+  });
+</script>
 
 </body>
 
