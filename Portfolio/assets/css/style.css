@@ -1266,20 +1266,24 @@
      * CUSTOM PROPERTY
      */
   
-    :root {
-  
-      /**
-       * typography
-       */
-  
-      --fs-1: 32px;
-      --fs-2: 24px;
-      --fs-3: 26px;
-      --fs-4: 18px;
-      --fs-6: 15px;
-      --fs-7: 15px;
-      --fs-8: 12px;
-  
+     :root {
+      --fs-1: 20px;
+      --fs-2: 18px;
+      --fs-3: 16px;
+      --fs-4: 14px;
+      --fs-5: 13px;
+      --fs-6: 12px;
+    }
+    
+    @media (min-width: 768px) {
+      :root {
+        --fs-1: 24px;
+        --fs-2: 20px;
+        --fs-3: 18px;
+        --fs-4: 16px;
+        --fs-5: 14px;
+        --fs-6: 13px;
+      }
     }
   
   
