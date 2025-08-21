@@ -204,6 +204,7 @@
 
         <header>
           <h2 class="h2 article-title">About me</h2>
+          <a href="assets/Cv Abdul.docx" class="btn" download style="margin-top:10px;display:inline-block;background:#2d3436;color:#fff;padding:8px 18px;border-radius:6px;text-decoration:none;font-size:16px;">Download Resume (PDF)</a>
         </header>
 
         <section class="about-text">
@@ -927,6 +928,11 @@
         <header>
           <h2 class="h2 article-title">Contact</h2>
         </header>
+        <div style="margin-bottom:18px;">
+          <a href="https://linkedin.com/in/croesus245" target="_blank" style="margin-right:12px;"><img src="./assets/images/icon-app.svg" alt="LinkedIn" width="32" style="vertical-align:middle;"> LinkedIn</a>
+          <a href="https://github.com/croesus245" target="_blank" style="margin-right:12px;"><img src="./assets/images/icon-dev.svg" alt="GitHub" width="32" style="vertical-align:middle;"> GitHub</a>
+          <a href="mailto:abdulsobur245@gmail.com" style="margin-right:12px;"><img src="./assets/images/icon-quote.svg" alt="Email" width="32" style="vertical-align:middle;"> Email</a>
+        </div>
 
         <section class="mapbox" data-mapbox>
           <figure>
@@ -941,28 +947,30 @@
           <h3 class="h3 form-title">Contact Form</h3>
 
           <form action="#" class="form" data-form>
-
             <div class="input-wrapper">
               <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input aria-label="Full name">
               <span class="error-message" id="fullname-error" style="display:none;color:#e74c3c;font-size:12px;"></span>
-
               <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input aria-label="Email address">
               <span class="error-message" id="email-error" style="display:none;color:#e74c3c;font-size:12px;"></span>
             </div>
-
             <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input aria-label="Your Message"></textarea>
             <span class="error-message" id="message-error" style="display:none;color:#e74c3c;font-size:12px;"></span>
-
             <div style="font-size:12px;color:#888;margin-bottom:8px;">Your message will be sent directly to <b>abdulsobur245@gmail.com</b></div>
-
             <button class="form-btn" type="submit" disabled data-form-btn aria-label="Send Message">
               <ion-icon name="paper-plane"></ion-icon>
               <span>Send Message</span>
             </button>
-
             <div id="form-feedback" style="margin-top:10px;font-size:14px;"></div>
-
           </form>
+
+          <div style="margin-top:32px;padding:18px 12px;background:#f5f6fa;border-radius:8px;max-width:400px;">
+            <h3 style="font-size:20px;margin-bottom:10px;color:#2d3436;">Subscribe to Newsletter</h3>
+            <form action="#" method="post" id="newsletter-form">
+              <input type="email" name="newsletter-email" placeholder="Your email address" required style="width:100%;padding:8px;margin-bottom:8px;border-radius:4px;border:1px solid #ccc;">
+              <button type="submit" style="background:#0984e3;color:#fff;padding:8px 16px;border:none;border-radius:4px;cursor:pointer;">Subscribe</button>
+              <div id="newsletter-feedback" style="margin-top:8px;font-size:13px;"></div>
+            </form>
+          </div>
 
         </section>
         
@@ -994,27 +1002,22 @@
   // Initialize EmailJS with your public key
   emailjs.init("jzzRzTx2EHuqX3JUJ");
 
-  // Select the form, inputs, and button
+  // Contact form logic
   const form = document.querySelector('[data-form]');
   const formInputs = document.querySelectorAll('[data-form-input]');
   const submitButton = document.querySelector('[data-form-btn]');
   const feedbackDiv = document.getElementById('form-feedback');
-
-  // Error message elements
   const fullnameError = document.getElementById('fullname-error');
   const emailError = document.getElementById('email-error');
   const messageError = document.getElementById('message-error');
 
-  // Simple email validation
   function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  // Inline validation and enable submit button
   formInputs.forEach((input) => {
     input.addEventListener('input', () => {
       let valid = true;
-      // Fullname validation
       if (input.name === 'fullname') {
         if (input.value.trim().length < 2) {
           fullnameError.textContent = 'Please enter your full name.';
@@ -1024,7 +1027,6 @@
           fullnameError.style.display = 'none';
         }
       }
-      // Email validation
       if (input.name === 'email') {
         if (!validateEmail(input.value.trim())) {
           emailError.textContent = 'Please enter a valid email address.';
@@ -1034,7 +1036,6 @@
           emailError.style.display = 'none';
         }
       }
-      // Message validation
       if (input.name === 'message') {
         if (input.value.trim().length < 5) {
           messageError.textContent = 'Message must be at least 5 characters.';
@@ -1044,7 +1045,6 @@
           messageError.style.display = 'none';
         }
       }
-      // Enable submit button only if all fields are valid and filled
       const allFieldsFilled = Array.from(formInputs).every(input => input.value.trim() !== '');
       const allValid =
         fullnameError.style.display === 'none' &&
@@ -1054,25 +1054,20 @@
     });
   });
 
-  // Handle form submission
   form.addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent default form submission
-
-    // Gather form data
+    e.preventDefault();
     const formData = new FormData(form);
     const formValues = {
       fullname: formData.get('fullname'),
       email: formData.get('email'),
       message: formData.get('message'),
     };
-
-    // Use EmailJS to send the form data
     emailjs.send("service_j8ldhiq", "template_lxkd1sw", formValues)
       .then((response) => {
         feedbackDiv.textContent = "Message sent successfully!";
         feedbackDiv.style.color = '#27ae60';
-        form.reset(); // Reset form fields
-        submitButton.disabled = true; // Disable button after submission
+        form.reset();
+        submitButton.disabled = true;
       })
       .catch((error) => {
         feedbackDiv.textContent = "Failed to send message. Please try again.";
@@ -1080,7 +1075,24 @@
         console.error("EmailJS Error:", error);
       });
   });
-  
+
+  // Newsletter signup logic
+  const newsletterForm = document.getElementById('newsletter-form');
+  const newsletterFeedback = document.getElementById('newsletter-feedback');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = newsletterForm.elements['newsletter-email'].value.trim();
+      if (!validateEmail(email)) {
+        newsletterFeedback.textContent = 'Please enter a valid email address.';
+        newsletterFeedback.style.color = '#e74c3c';
+        return;
+      }
+      newsletterFeedback.textContent = 'Subscribed successfully!';
+      newsletterFeedback.style.color = '#27ae60';
+      newsletterForm.reset();
+    });
+  }
 </script>
 
 </body>
