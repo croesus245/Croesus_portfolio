@@ -315,13 +315,11 @@
   \*-----------------------------------*/
   
   .sidebar {
-    margin-bottom: 15px;
-    max-height: 112px;
-    overflow: hidden;
-    transition: var(--transition-2);
+  margin-bottom: 15px;
+  transition: var(--transition-2);
   }
   
-  .sidebar.active { max-height: 405px; }
+  .sidebar.active { /* max-height removed for desktop */ }
   
   .sidebar-info {
     position: relative;
@@ -1786,6 +1784,10 @@
    */
   
   @media (min-width: 1250px) {
+    .sidebar {
+      max-height: none !important;
+      overflow: visible !important;
+    }
   
     /**
      * RESET
@@ -1813,7 +1815,10 @@
      * REUSED STYLE
      */
   
-    .sidebar, article { width: auto; }
+    .sidebar, article {
+      max-width: 1200px;
+      width: 100%;
+    }
   
     article { min-height: 100%; }
   
@@ -1833,9 +1838,9 @@
     }
   
     .main-content {
-      min-width: 75%;
-      width: 75%;
-      margin: 0;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
     }
   
   
