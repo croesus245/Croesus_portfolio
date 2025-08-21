@@ -98,13 +98,6 @@
             <div class="icon-box">
               <ion-icon name="calendar-outline"></ion-icon>
             </div>
-
-            <div class="contact-info">
-              <p class="contact-title">Birthday</p>
-
-              <time datetime="2007-11-05">Nov 5, 2007</time>
-            </div>
-
           </li>
 
           <li class="contact-item">
@@ -990,17 +983,22 @@
           <form action="#" class="form" data-form>
 
             <div class="input-wrapper">
-              <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
+              <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input aria-label="Full name">
+              <span class="error-message" id="fullname-error" style="display:none;color:#e74c3c;font-size:12px;"></span>
 
-              <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input>
+              <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input aria-label="Email address">
+              <span class="error-message" id="email-error" style="display:none;color:#e74c3c;font-size:12px;"></span>
             </div>
 
-            <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input></textarea>
+            <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input aria-label="Your Message"></textarea>
+            <span class="error-message" id="message-error" style="display:none;color:#e74c3c;font-size:12px;"></span>
 
-            <button class="form-btn" type="submit" disabled data-form-btn>
+            <button class="form-btn" type="submit" disabled data-form-btn aria-label="Send Message">
               <ion-icon name="paper-plane"></ion-icon>
               <span>Send Message</span>
             </button>
+
+            <div id="form-feedback" style="margin-top:10px;font-size:14px;"></div>
 
           </form>
 
@@ -1038,12 +1036,59 @@
   const form = document.querySelector('[data-form]');
   const formInputs = document.querySelectorAll('[data-form-input]');
   const submitButton = document.querySelector('[data-form-btn]');
+  const feedbackDiv = document.getElementById('form-feedback');
 
-  // Enable submit button when all fields are filled
+  // Error message elements
+  const fullnameError = document.getElementById('fullname-error');
+  const emailError = document.getElementById('email-error');
+  const messageError = document.getElementById('message-error');
+
+  // Simple email validation
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // Inline validation and enable submit button
   formInputs.forEach((input) => {
     input.addEventListener('input', () => {
+      let valid = true;
+      // Fullname validation
+      if (input.name === 'fullname') {
+        if (input.value.trim().length < 2) {
+          fullnameError.textContent = 'Please enter your full name.';
+          fullnameError.style.display = 'block';
+          valid = false;
+        } else {
+          fullnameError.style.display = 'none';
+        }
+      }
+      // Email validation
+      if (input.name === 'email') {
+        if (!validateEmail(input.value.trim())) {
+          emailError.textContent = 'Please enter a valid email address.';
+          emailError.style.display = 'block';
+          valid = false;
+        } else {
+          emailError.style.display = 'none';
+        }
+      }
+      // Message validation
+      if (input.name === 'message') {
+        if (input.value.trim().length < 5) {
+          messageError.textContent = 'Message must be at least 5 characters.';
+          messageError.style.display = 'block';
+          valid = false;
+        } else {
+          messageError.style.display = 'none';
+        }
+      }
+      // Enable submit button only if all fields are valid and filled
       const allFieldsFilled = Array.from(formInputs).every(input => input.value.trim() !== '');
-      submitButton.disabled = !allFieldsFilled;
+      const allValid =
+        fullnameError.style.display === 'none' &&
+        emailError.style.display === 'none' &&
+        messageError.style.display === 'none';
+      submitButton.disabled = !(allFieldsFilled && allValid);
     });
   });
 
@@ -1062,12 +1107,14 @@
     // Use EmailJS to send the form data
     emailjs.send("service_j8ldhiq", "template_lxkd1sw", formValues)
       .then((response) => {
-        alert("Message sent successfully!");
+        feedbackDiv.textContent = "Message sent successfully!";
+        feedbackDiv.style.color = '#27ae60';
         form.reset(); // Reset form fields
         submitButton.disabled = true; // Disable button after submission
       })
       .catch((error) => {
-        alert("Failed to send message. Please try again.");
+        feedbackDiv.textContent = "Failed to send message. Please try again.";
+        feedbackDiv.style.color = '#e74c3c';
         console.error("EmailJS Error:", error);
       });
   });
