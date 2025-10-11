@@ -1366,29 +1366,6 @@
     });
   }
 
-  // Dark mode toggle
-  const themeToggle = document.getElementById('theme-toggle');
-  const themeIcon = document.getElementById('theme-icon');
-  const savedTheme = localStorage.getItem('theme');
-
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-mode');
-    themeIcon.setAttribute('name', 'sunny-outline');
-  }
-
-  themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
-    
-    if (isDark) {
-      themeIcon.setAttribute('name', 'sunny-outline');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      themeIcon.setAttribute('name', 'moon-outline');
-      localStorage.setItem('theme', 'light');
-    }
-  });
-
   // Typing animation for role
   const typingText = document.getElementById('typing-text');
   const roles = [
