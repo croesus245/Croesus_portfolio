@@ -178,7 +178,7 @@
     background: var(--eerie-black-2);
     border: 1px solid var(--jet);
     border-radius: 20px;
-    padding: 15px;
+    padding: 20px; /* Increased from 15px for better readability */
     box-shadow: var(--shadow-1);
     z-index: 1;
   }
@@ -310,7 +310,7 @@
   
   main {
     margin: 15px 12px;
-    margin-bottom: 75px;
+    margin-bottom: 90px; /* Increased for fixed navbar */
     min-width: 259px;
   }
   
@@ -323,14 +323,15 @@
   \*-----------------------------------*/
   
   .sidebar {
-  margin-bottom: 15px;
+  margin-bottom: 20px; /* Increased spacing */
   max-height: 112px;
   overflow: hidden;
   transition: var(--transition-2);
   }
   
   .sidebar.active { 
-    max-height: 405px;
+    max-height: 450px; /* Increased to show all content */
+    margin-bottom: 30px; /* More space when expanded */
   }
   
   .sidebar-info {
@@ -3065,7 +3066,11 @@ textarea.form-input:focus {
   /* Sidebar */
   .sidebar {
     padding: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar.active {
+    max-height: 500px; /* Ensure all content shows */
   }
   
   .avatar-box {
@@ -3093,6 +3098,27 @@ textarea.form-input:focus {
   /* Contact list */
   .contact-item {
     gap: 10px;
+  }
+  
+  /* Main content - CRITICAL for readability */
+  article {
+    padding: 18px !important;
+    margin-bottom: 20px;
+  }
+  
+  .article-title {
+    font-size: 20px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  /* About text readability */
+  .about-text {
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+  }
+  
+  .about-text p {
+    margin-bottom: 15px;
   }
   
   .icon-box {
