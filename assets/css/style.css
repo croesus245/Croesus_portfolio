@@ -1169,6 +1169,66 @@ main {
 }
   
 
+/**
+ * GitHub Stats
+ */
+
+.github-stats {
+  margin-top: clamp(30px, 5vw, 40px);
+  margin-bottom: clamp(20px, 3.5vw, 30px);
+}
+
+.github-stats .title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2.5vw, 15px);
+  margin-bottom: clamp(20px, 3.5vw, 25px);
+}
+
+.github-stats-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3.5vw, 25px);
+  padding: clamp(10px, 2vw, 15px) 0;
+}
+
+.github-stat-item {
+  background: var(--border-gradient-onyx);
+  border-radius: clamp(12px, 2vw, 16px);
+  padding: clamp(15px, 3vw, 20px);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-1);
+}
+
+.github-stat-item::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-gradient-jet);
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.github-stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.github-stat-item img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.github-profile-btn {
+  transition: all 0.3s ease !important;
+}
+
+.github-profile-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 60, 0, 0.3) !important;
+}
+
 
 /*-----------------------------------*\
   #PORTFOLIO
@@ -2316,6 +2376,15 @@ textarea.form-input::-webkit-resizer {
     padding-bottom: clamp(18px, 3vw, 20px);
   }
 
+  /* GitHub stats - show 2 columns on tablet */
+  .github-stats-content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .github-stat-item:last-child {
+    grid-column: 1 / -1;
+  }
+
   /* Hide mobile dropdown, show button filters */
   .filter-select-box {
     display: none;
@@ -2456,6 +2525,15 @@ textarea.form-input::-webkit-resizer {
   .clients-item {
     min-width: calc(25% - 38px);
     max-width: calc(25% - 38px);
+  }
+
+  /* GitHub stats - show all 3 in a row on desktop */
+  .github-stats-content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .github-stat-item:last-child {
+    grid-column: auto;
   }
 
   /* Three-column portfolio grid */
