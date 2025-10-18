@@ -460,7 +460,6 @@
     left: 0;
     width: 100%;
     background: hsla(240, 1%, 17%, 0.75);
-    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid var(--jet);
     border-radius: 12px 12px 0 0;
@@ -602,6 +601,7 @@
     font-weight: var(--fw-300);
     line-height: 1.6;
     display: -webkit-box;
+    line-clamp: 4;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -1439,6 +1439,7 @@
     }
   
     .testimonials-text {
+      line-clamp: 2;
       -webkit-line-clamp: 2;
     }
   
@@ -1884,32 +1885,120 @@
   
   }
 
-/*-----------------------------------*\
-  #MOBILE OPTIMIZATIONS (< 480px)
-\*-----------------------------------*/
 
-@media (max-width: 480px) {
-  main { margin: 12px 8px; margin-bottom: 95px; }
-  .sidebar { padding: 18px; margin-bottom: 18px; }
-  .sidebar.active { max-height: 500px; }
-  article { padding: 18px; }
-  .article-title { font-size: 22px; margin-bottom: 18px; }
-  .about-text, .service-item-text, .timeline-text { font-size: 15px; line-height: 1.8; }
-  .service-list { gap: 15px; }
-  .service-item { padding: 18px; }
-  .timeline-item { padding-left: 25px; }
-  .project-list, .blog-posts-list { gap: 20px; }
-  .form-input { padding: 12px 18px; font-size: 15px; }
-  .form-btn { padding: 12px 24px; font-size: 15px; }
-  .navbar { padding: 12px 8px; }
-  .navbar-link { font-size: 13px; padding: 18px 8px; }
-  .filter-item button { font-size: 13px; padding: 10px 16px; }
+/* ========================================
+   ENHANCED TYPOGRAPHY
+   ======================================== */
+
+/* Larger, bolder headings */
+.h2.article-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 25px;
+  background: var(--text-gradient-orange);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-@media (max-width: 360px) {
-  main { margin: 10px 6px; margin-bottom: 100px; }
-  article, .sidebar { padding: 15px; }
-  .article-title { font-size: 20px; }
-  .navbar-link { font-size: 12px; padding: 16px 6px; }
-  .service-item, .project-item, .blog-post-item { padding: 15px; }
+.h3 {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--white-1);
+  margin-bottom: 20px;
+}
+
+.h4 {
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Enhanced body text */
+.about-text p {
+  font-size: clamp(15px, 2vw, 17px);
+  line-height: 1.8;
+  color: var(--light-gray);
+  margin-bottom: 20px;
+}
+
+.about-text strong {
+  color: var(--white-1);
+  font-weight: 600;
+}
+
+/* Service item titles */
+.service-item-title {
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 600;
+  color: var(--white-1);
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.service-item:hover .service-item-title {
+  color: var(--orange-yellow-crayola);
+}
+
+/* Timeline text enhancement */
+.timeline-text {
+  font-size: clamp(14px, 2vw, 16px);
+  line-height: 1.7;
+}
+
+/* Project titles */
+.project-title {
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Stats section typography */
+.stat-card h2 {
+  font-size: clamp(32px, 6vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.stat-card p {
+  font-size: clamp(13px, 2vw, 15px);
+  font-weight: 500;
+}
+
+/* Testimonials */
+.testimonials-text {
+  font-size: clamp(14px, 2vw, 16px);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.testimonials-item-title {
+  font-size: clamp(15px, 2.5vw, 18px);
+  font-weight: 600;
+}
+
+/* Button typography */
+.btn,
+button {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Link hover effects */
+a {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+a:hover {
+  color: var(--orange-yellow-crayola);
+}
+
+.certificate-item {
+  flex: 0 0 120px;
+}
+.certificate-item img {
+  width: 100px;
 }
