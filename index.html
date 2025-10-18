@@ -846,15 +846,91 @@
 
         <section class="blog-posts">
 
-          <ul class="blog-posts-list" id="substack-blog-posts">
-            <!-- Blog posts will be loaded automatically from Substack -->
-            
-            <!-- Loading placeholder -->
-            <li class="blog-post-item" style="text-align:center;padding:40px 20px;">
-              <p style="color:var(--light-gray);font-size:var(--fs-6);">
-                Loading blog posts from Substack...
-              </p>
+          <ul class="blog-posts-list">
+
+            <li class="blog-post-item">
+              <a href="https://croesusblog.blogspot.com/2025/01/HAS.html">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/location blog.jpg" alt="location blog" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">Tech</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2025-01-26">jan 26, 2025</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">Home Addressing System</h3>
+
+                  <p class="blog-text">
+                  The Father to the Fatherless
+                  </p>
+
+                </div>
+
+              </a>
             </li>
+
+            <li class="blog-post-item">
+              <a href="https://croesusblog.blogspot.com/2025/01/Surveying.html">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/instrument.jpg" alt="Surveying" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">GIS</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2025-01-26">jan 26, 2025</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">From Maps to Machines</h3>
+
+                  <p class="blog-text">
+                   A must read for all surveying Students
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+            <li class="blog-post-item">
+              <a href="https://croesusblog.blogspot.com/2025/01/how-to-read-and-understand-effectively.html">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/cytonn-photography-ZJEKICY5EXY-unsplash.jpg" alt="Surveying" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">GIS</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2025-01-28">jan 28, 2025</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">The recalling Method</h3>
+
+                  <p class="blog-text">
+                  .......
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
 
           </ul>
 
@@ -937,19 +1013,6 @@
     - custom js link
   -->
   <script src="./assets/js/script.js"></script>
-
-  <!--
-    - Substack blog integration
-  -->
-  <script src="./assets/js/substack-integration.js"></script>
-  <script>
-    // Initialize Substack blog integration
-    document.addEventListener('DOMContentLoaded', function() {
-      const substackUrl = 'https://theayinde1.substack.com';
-      const blog = new SubstackBlogIntegration(substackUrl, 'substack-blog-posts');
-      blog.init(10); // Load latest 10 posts
-    });
-  </script>
 
   <!--
     - ionicon link
