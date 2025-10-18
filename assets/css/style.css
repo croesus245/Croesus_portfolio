@@ -141,6 +141,9 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
 }
 
 a {
@@ -210,6 +213,9 @@ article {
   box-shadow: var(--shadow-1);
   z-index: 1;
   width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  word-wrap: break-word;
 }
 
 .separator {
@@ -353,6 +359,8 @@ main {
   margin-bottom: clamp(70px, 10vw, 75px);
   min-width: min(100%, 259px);
   max-width: 100%;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 
@@ -1616,31 +1624,287 @@ textarea.form-input::-webkit-resizer {
   font-size: var(--fs-7);
   font-weight: var(--fw-500);
 }
+
+/**
+ * Newsletter section styling
+ */
+
+.newsletter-container {
+  margin-top: clamp(30px, 5vw, 40px);
+  padding: clamp(18px, 3.5vw, 24px);
+  background: var(--border-gradient-onyx);
+  border-radius: clamp(12px, 2.5vw, 16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.newsletter-container::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-gradient-jet);
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.newsletter-container h3 {
+  font-size: clamp(1.125rem, 2.5vw, 1.25rem);
+  font-weight: var(--fw-500);
+  color: var(--white-2);
+  margin-bottom: clamp(12px, 2.5vw, 16px);
+}
+
+#newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2vw, 12px);
+}
+
+#newsletter-form input[type="email"] {
+  width: 100%;
+  padding: clamp(10px, 2vw, 12px) clamp(14px, 2.8vw, 16px);
+  border: 1px solid var(--jet);
+  border-radius: clamp(8px, 1.5vw, 10px);
+  background: var(--eerie-black-1);
+  color: var(--white-2);
+  font-size: var(--fs-7);
+  outline: none;
+  transition: border-color var(--transition-1);
+}
+
+#newsletter-form input[type="email"]:focus {
+  border-color: #ff3c00;
+}
+
+#newsletter-form input[type="email"]::placeholder {
+  color: var(--light-gray-70);
+}
+
+#newsletter-form button {
+  background: linear-gradient(135deg, #ff3c00 0%, #ff5722 100%);
+  color: #ffffff;
+  padding: clamp(10px, 2vw, 12px) clamp(18px, 3.5vw, 24px);
+  border: none;
+  border-radius: clamp(8px, 1.5vw, 10px);
+  font-size: var(--fs-7);
+  font-weight: var(--fw-500);
+  cursor: pointer;
+  transition: all var(--transition-1);
+  box-shadow: 0 4px 12px hsla(14, 100%, 50%, 0.3);
+}
+
+#newsletter-form button:hover {
+  background: linear-gradient(135deg, #ff5722 0%, #ff7043 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px hsla(14, 100%, 50%, 0.4);
+}
+
+#newsletter-form button:active {
+  transform: translateY(0);
+}
+
+#newsletter-feedback {
+  font-size: clamp(0.75rem, 1.5vw, 0.8125rem);
+  margin-top: clamp(8px, 1.5vw, 10px);
+  text-align: center;
+}
   
 
 
 /*-----------------------------------*\
   #RESPONSIVE - Mobile First Approach
+  Breakpoints: 320px, 375px, 412px, 450px, 580px, 600px, 768px, 1024px, 1250px, 1440px+
 \*-----------------------------------*/
 
 /**
- * responsive larger than 375px (Small Mobile)
+ * responsive larger than 320px (Ultra-Small Mobile - iPhone SE)
+ * Critical base styles for smallest supported screens
+ */
+
+@media (min-width: 320px) {
+  /* Ensure no horizontal overflow on tiny screens */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Optimize sidebar for ultra-small screens */
+  .sidebar {
+    max-height: clamp(95px, 14vw, 100px);
+  }
+
+  .avatar-box img {
+    width: clamp(55px, 9vw, 60px);
+  }
+
+  .info-content .name {
+    font-size: clamp(0.9rem, 2.2vw, 1rem);
+  }
+
+  .info-content .title {
+    font-size: clamp(0.625rem, 1.4vw, 0.6875rem);
+    padding: clamp(3px, 0.5vw, 4px) clamp(6px, 1.5vw, 8px);
+  }
+
+  .info_more-btn {
+    font-size: clamp(10px, 1.8vw, 11px);
+    padding: clamp(7px, 1.25vw, 8px);
+    top: -12px;
+    right: -12px;
+  }
+
+  /* Optimize navbar for ultra-small screens */
+  .navbar-list {
+    padding: 0 clamp(5px, 1.5vw, 8px);
+    gap: clamp(3px, 0.75vw, 5px);
+  }
+
+  .navbar-link {
+    font-size: clamp(0.625rem, 1.3vw, 0.7rem);
+    padding: clamp(12px, 2.5vw, 15px) clamp(3px, 0.75vw, 5px);
+  }
+
+  /* Ensure service cards don't overflow */
+  .service-list {
+    gap: clamp(12px, 2.5vw, 15px);
+  }
+
+  .service-item {
+    padding: clamp(12px, 2.5vw, 15px);
+  }
+
+  .service-icon-box img {
+    width: clamp(30px, 5vw, 35px);
+  }
+
+  .service-item-title {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+
+  .service-item-text {
+    font-size: clamp(0.8125rem, 1.75vw, 0.875rem);
+  }
+
+  /* Optimize testimonials for ultra-small screens */
+  .testimonials-list {
+    gap: clamp(12px, 2.5vw, 15px);
+  }
+
+  .testimonials-avatar-box img {
+    width: clamp(50px, 8vw, 60px);
+  }
+
+  /* Optimize clients section */
+  .clients-item {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .clients-item img {
+    max-width: clamp(90px, 14vw, 100px);
+  }
+
+  /* Portfolio and blog optimization */
+  .project-list,
+  .blog-posts-list {
+    gap: clamp(15px, 3vw, 20px);
+  }
+
+  /* Contact form optimization */
+  .form-input {
+    font-size: clamp(0.8125rem, 1.75vw, 0.875rem);
+    padding: clamp(10px, 2vw, 12px) clamp(12px, 2.5vw, 15px);
+  }
+
+  .form-btn {
+    font-size: clamp(0.8125rem, 1.75vw, 0.875rem);
+    padding: clamp(10px, 2vw, 12px) clamp(12px, 2.5vw, 15px);
+  }
+
+  /* Certification gallery responsiveness */
+  .certifications-gallery {
+    grid-template-columns: 1fr;
+    gap: clamp(15px, 3vw, 20px);
+  }
+
+  .certificate-item {
+    max-width: 100%;
+  }
+
+  .certificate-image {
+    border-radius: clamp(8px, 1.5vw, 10px);
+  }
+
+  .certificate-title {
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    margin-top: clamp(6px, 1.25vw, 8px);
+  }
+}
+
+
+/**
+ * responsive larger than 375px (Small Mobile - iPhone X/11/12)
+ * Enhanced readability and spacing for standard small phones
  */
 
 @media (min-width: 375px) {
   .navbar-list {
     padding: 0 clamp(10px, 2.5vw, 15px);
+    gap: clamp(5px, 1vw, 8px);
   }
 
   .clients-item {
     min-width: 45%;
     max-width: 45%;
   }
+
+  .service-item {
+    padding: clamp(15px, 3vw, 18px);
+  }
+
+  .certifications-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/**
+ * responsive larger than 412px (Android Standard - Galaxy S20/S21)
+ * Optimize for popular Android screen sizes
+ */
+
+@media (min-width: 412px) {
+  .sidebar-info {
+    gap: clamp(15px, 3vw, 20px);
+  }
+
+  .avatar-box img {
+    width: clamp(70px, 11vw, 80px);
+  }
+
+  .info-content .name {
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+  }
+
+  .navbar-link {
+    font-size: clamp(0.7rem, 1.5vw, 0.75rem);
+    padding: clamp(15px, 3vw, 18px) clamp(5px, 1vw, 7px);
+  }
+
+  .service-list {
+    gap: clamp(15px, 3vw, 18px);
+  }
+
+  /* Better two-column layout for certifications on larger phones */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: clamp(18px, 3.5vw, 22px);
+  }
 }
 
 
 /**
  * responsive larger than 450px (Large Mobile)
+ * Three-column layouts and enhanced spacing
  */
 
 @media (min-width: 450px) {
@@ -1662,11 +1926,22 @@ textarea.form-input::-webkit-resizer {
   .testimonials-item {
     min-width: 100%;
   }
+
+  /* Certification gallery - 2 columns on larger phones */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: clamp(20px, 4vw, 25px);
+  }
+
+  .certificate-image {
+    border-radius: clamp(10px, 2vw, 12px);
+  }
 }
 
 
 /**
- * responsive larger than 580px (Tablet Portrait)
+ * responsive larger than 580px (Tablet Portrait - iPad Mini)
+ * Major layout improvements for tablet portrait mode
  */
 
 @media (min-width: 580px) {
@@ -1932,11 +2207,81 @@ textarea.form-input::-webkit-resizer {
   .form-btn ion-icon {
     font-size: clamp(16px, 3vw, 18px);
   }
+
+  /* Certification gallery - 2 columns on tablets */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: clamp(25px, 5vw, 30px);
+  }
+
+  .certificate-image {
+    border-radius: clamp(12px, 2.5vw, 14px);
+    box-shadow: var(--shadow-2);
+    transition: transform var(--transition-1);
+  }
+
+  .certificate-image:hover {
+    transform: scale(1.02);
+  }
+
+  .certificate-title {
+    font-size: clamp(0.875rem, 1.875vw, 1rem);
+    margin-top: clamp(10px, 2vw, 12px);
+    color: var(--white-2);
+    text-align: center;
+  }
 }
 
 
 /**
- * responsive larger than 768px (Tablet Landscape)
+ * responsive larger than 600px (Small Tablet - iPad Mini Landscape)
+ * Transition zone between portrait and landscape tablets
+ */
+
+@media (min-width: 600px) {
+  .sidebar,
+  article {
+    width: min(600px, 100%);
+  }
+
+  /* Two-column service grid */
+  .service-list {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: clamp(20px, 4vw, 25px);
+  }
+
+  /* Better testimonials layout */
+  .testimonials-list {
+    gap: clamp(30px, 5.5vw, 35px);
+  }
+
+  /* Certification gallery - 3 columns on small tablets */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: clamp(25px, 5vw, 30px);
+  }
+
+  /* Newsletter section improvements */
+  #newsletter-form {
+    display: flex;
+    gap: clamp(10px, 2vw, 12px);
+    flex-wrap: wrap;
+  }
+
+  #newsletter-form input[type="email"] {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  #newsletter-form button {
+    flex-shrink: 0;
+  }
+}
+
+
+/**
+ * responsive larger than 768px (Tablet Landscape - iPad)
+ * Major transition point - switch to button-based filters
  */
 
 @media (min-width: 768px) {
@@ -1971,6 +2316,7 @@ textarea.form-input::-webkit-resizer {
     padding-bottom: clamp(18px, 3vw, 20px);
   }
 
+  /* Hide mobile dropdown, show button filters */
   .filter-select-box {
     display: none;
   }
@@ -2003,11 +2349,13 @@ textarea.form-input::-webkit-resizer {
     background: hsla(14, 100%, 50%, 0.1);
   }
 
+  /* Two-column grids for portfolio and blog */
   .project-list,
   .blog-posts-list {
     grid-template-columns: 1fr 1fr;
   }
 
+  /* Two-column form inputs */
   .input-wrapper {
     grid-template-columns: 1fr 1fr;
   }
@@ -2018,15 +2366,37 @@ textarea.form-input::-webkit-resizer {
     padding-left: clamp(25px, 5vw, 30px);
     padding-right: clamp(25px, 5vw, 30px);
   }
+
+  /* Certification gallery - 3 columns on tablets */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: clamp(30px, 5.5vw, 35px);
+  }
+
+  .certificate-item {
+    text-align: center;
+  }
+
+  .certificate-image {
+    border-radius: clamp(14px, 2.75vw, 16px);
+    box-shadow: var(--shadow-3);
+  }
+
+  .certificate-title {
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+    font-weight: var(--fw-500);
+  }
 }
 
 
 /**
  * responsive larger than 1024px (Laptop/Desktop)
+ * Major layout shift - sidebar becomes fixed, navbar moves to top
  */
 
 @media (min-width: 1024px) {
   :root {
+    /* Softer shadows for larger screens */
     --shadow-1: -4px 8px 24px hsla(0, 0%, 0%, 0.125);
     --shadow-2: 0 16px 30px hsla(0, 0%, 0%, 0.125);
     --shadow-3: 0 16px 40px hsla(0, 0%, 0%, 0.125);
@@ -2048,6 +2418,7 @@ textarea.form-input::-webkit-resizer {
     margin: auto;
   }
 
+  /* Navbar repositioned to top-right */
   .navbar {
     position: absolute;
     bottom: auto;
@@ -2070,20 +2441,24 @@ textarea.form-input::-webkit-resizer {
     font-size: clamp(0.8125rem, 1.75vw, 0.875rem);
   }
 
+  /* Two-column service grid on laptop */
   .service-list {
     grid-template-columns: 1fr 1fr;
     gap: clamp(18px, 3.5vw, 20px) clamp(22px, 4vw, 25px);
   }
 
+  /* Two-column testimonials on laptop */
   .testimonials-item {
     min-width: calc(50% - 15px);
   }
 
+  /* Four-column clients grid */
   .clients-item {
     min-width: calc(25% - 38px);
     max-width: calc(25% - 38px);
   }
 
+  /* Three-column portfolio grid */
   .project-list {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -2091,14 +2466,39 @@ textarea.form-input::-webkit-resizer {
   .blog-banner-box {
     height: clamp(210px, 35vw, 230px);
   }
+
+  /* Certification gallery - 3 columns on laptops */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(35px, 6vw, 40px);
+  }
+
+  .certificate-image {
+    border-radius: 16px;
+    box-shadow: var(--shadow-4);
+    transition: all var(--transition-1);
+  }
+
+  .certificate-image:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-5);
+  }
+
+  .certificate-title {
+    font-size: 1.0625rem;
+    font-weight: var(--fw-500);
+    margin-top: 14px;
+  }
 }
 
 
 /**
  * responsive larger than 1250px (Large Desktop)
+ * Two-column layout with fixed sidebar
  */
 
 @media (min-width: 1250px) {
+  /* Custom scrollbar for large screens */
   body::-webkit-scrollbar {
     width: 20px;
   }
@@ -2132,6 +2532,7 @@ textarea.form-input::-webkit-resizer {
     min-height: 100%;
   }
 
+  /* Two-column layout: Sidebar + Content */
   main {
     max-width: min(1200px, 95vw);
     margin-inline: auto;
@@ -2147,6 +2548,7 @@ textarea.form-input::-webkit-resizer {
     margin: 0;
   }
 
+  /* Sticky sidebar on large screens */
   .sidebar {
     position: sticky;
     top: 60px;
@@ -2210,16 +2612,41 @@ textarea.form-input::-webkit-resizer {
   .timeline-text {
     max-width: 700px;
   }
+
+  /* Certification gallery - 4 columns on large desktops */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: clamp(40px, 6.5vw, 45px);
+  }
+
+  .certificate-item {
+    transition: all var(--transition-1);
+  }
+
+  .certificate-item:hover {
+    transform: translateY(-8px);
+  }
+
+  .certificate-image {
+    border-radius: 18px;
+  }
+
+  .certificate-title {
+    font-size: 1.125rem;
+    margin-top: 16px;
+  }
 }
 
 
 /**
- * responsive larger than 1440px (4K & Ultra-wide)
+ * responsive larger than 1440px (4K & Ultra-wide Displays)
+ * Optimized spacing and maximum content widths
  */
 
 @media (min-width: 1440px) {
   main {
     max-width: 1400px;
+    gap: clamp(25px, 3.5vw, 30px);
   }
 
   .main-content {
@@ -2230,12 +2657,84 @@ textarea.form-input::-webkit-resizer {
     max-width: 350px;
   }
 
+  /* Increased gaps for ultrawide screens */
   .project-list {
     gap: clamp(30px, 4vw, 35px);
   }
 
   .blog-posts-list {
     gap: clamp(35px, 5vw, 40px);
+  }
+
+  .service-list {
+    gap: clamp(25px, 4vw, 30px);
+  }
+
+  /* Certification gallery - optimized for 4K */
+  .certifications-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 50px;
+  }
+
+  .certificate-image {
+    border-radius: 20px;
+    box-shadow: 0 20px 50px hsla(0, 0%, 0%, 0.3);
+  }
+
+  .certificate-image:hover {
+    transform: scale(1.08);
+    box-shadow: 0 25px 60px hsla(0, 0%, 0%, 0.4);
+  }
+
+  .certificate-title {
+    font-size: 1.25rem;
+    margin-top: 18px;
+    font-weight: var(--fw-600);
+  }
+
+  /* Optimal reading width for long text */
+  .about-text p,
+  .timeline-text,
+  .blog-text {
+    max-width: 800px;
+  }
+}
+
+
+/**
+ * responsive larger than 1920px (Ultra-wide 2K+)
+ * Maximum constraints to prevent over-stretching
+ */
+
+@media (min-width: 1920px) {
+  main {
+    max-width: 1600px;
+  }
+
+  .main-content {
+    max-width: 1200px;
+  }
+
+  .sidebar {
+    max-width: 380px;
+  }
+
+  /* Prevent images from becoming too large */
+  .project-img,
+  .blog-banner-box {
+    max-height: 400px;
+    object-fit: cover;
+  }
+
+  /* Certification gallery - maximum 4 columns */
+  .certifications-gallery {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 60px;
+  }
+
+  .certificate-image {
+    max-width: 100%;
+    height: auto;
   }
 }
 
