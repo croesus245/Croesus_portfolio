@@ -29,13 +29,13 @@
   ), hsl(240, 2%, 13%);
   --bg-gradient-yellow-1: linear-gradient(
     to bottom right, 
-    hsl(45, 100%, 71%) 0%, 
-    hsla(36, 100%, 69%, 0) 50%
+    #ff3c00 0%, 
+    hsla(14, 100%, 50%, 0) 50%
   );
   --bg-gradient-yellow-2: linear-gradient(
     135deg, 
-    hsla(45, 100%, 71%, 0.251) 0%, 
-    hsla(35, 100%, 68%, 0) 59.86%
+    hsla(14, 100%, 50%, 0.251) 0%, 
+    hsla(14, 100%, 50%, 0) 59.86%
   ), hsl(240, 2%, 13%);
   --border-gradient-onyx: linear-gradient(
     to bottom right, 
@@ -44,13 +44,13 @@
   );
   --text-gradient-yellow: linear-gradient(
     to right, 
-    hsl(45, 100%, 72%), 
-    hsl(35, 100%, 68%)
+    #ff3c00, 
+    #ff5722
   );
   --text-gradient-orange: linear-gradient(
     to right, 
-    #FFA500, 
-    #FF8C00
+    #ff3c00, 
+    #ff5722
   );
 
   /* solid */
@@ -61,11 +61,11 @@
   --smoky-black: #000000;
   --white-1: hsl(0, 0%, 100%);
   --white-2: hsl(0, 0%, 98%);
-  --orange-yellow-crayola: #FFA500;
-  --vegas-gold: hsl(45, 54%, 58%);
+  --orange-yellow-crayola: #ff3c00;
+  --vegas-gold: #ff3c00;
   --light-gray: hsl(0, 0%, 84%);
   --light-gray-70: hsla(0, 0%, 84%, 0.7);
-  --bittersweet-shimmer: hsl(0, 43%, 51%);
+  --bittersweet-shimmer: #ff3c00;
 
   /**
    * typography - Fluid & Responsive
@@ -177,12 +177,12 @@ input, textarea {
 }
 
 ::selection {
-  background: var(--orange-yellow-crayola);
-  color: var(--smoky-black);
+  background: #ff3c00;
+  color: #ffffff;
 }
 
 :focus {
-  outline: 2px solid var(--orange-yellow-crayola);
+  outline: 2px solid #ff3c00;
   outline-offset: 2px;
 }
 
@@ -191,7 +191,7 @@ input, textarea {
 }
 
 :focus-visible {
-  outline: 2px solid var(--orange-yellow-crayola);
+  outline: 2px solid #ff3c00;
   outline-offset: 2px;
 }
   
@@ -229,7 +229,7 @@ article {
   justify-content: center;
   align-items: center;
   font-size: clamp(16px, 2.5vw, 18px);
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
   box-shadow: var(--shadow-1);
   z-index: 1;
   flex-shrink: 0;
@@ -295,7 +295,7 @@ article.active {
 
 .has-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--orange-yellow-crayola) var(--onyx);
+  scrollbar-color: #ff3c00 var(--onyx);
 }
 
 .has-scrollbar::-webkit-scrollbar {
@@ -309,7 +309,7 @@ article.active {
 }
 
 .has-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--orange-yellow-crayola);
+  background: #ff3c00;
   border-radius: 5px;
 }
 
@@ -524,7 +524,7 @@ main {
 }
 
 .social-item .social-link:hover {
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
   transform: translateY(-3px);
 }
   
@@ -580,7 +580,7 @@ main {
 }
 
 .navbar-link.active {
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
   position: relative;
 }
 
@@ -592,7 +592,7 @@ main {
   transform: translateX(-50%);
   width: 60%;
   height: 2px;
-  background: var(--orange-yellow-crayola);
+  background: #ff3c00;
   border-radius: 2px 2px 0 0;
 }
   
@@ -623,12 +623,12 @@ main {
 }
 
 .about-text a {
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
   text-decoration: underline;
 }
 
 .about-text a:hover {
-  color: var(--vegas-gold);
+  color: #ff5722;
 }
 
 /**
@@ -694,7 +694,7 @@ main {
 }
 
 .service-item:hover .service-item-title {
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
 }
 
 .service-item-text {
@@ -1192,7 +1192,7 @@ main {
 }
 
 .filter-select:hover {
-  border-color: var(--orange-yellow-crayola);
+  border-color: #ff3c00;
 }
 
 .filter-select.active .select-icon {
@@ -1237,7 +1237,7 @@ main {
 
 .select-item button:hover {
   background: hsl(240, 2%, 20%);
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
 }
 
 .project-list {
@@ -1301,7 +1301,7 @@ main {
 .project-item-icon-box {
   --scale: 0.8;
   background: var(--jet);
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1350,7 +1350,7 @@ main {
 }
 
 .project-item > a:hover .project-title {
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
 }
 
 .project-category {
@@ -1454,7 +1454,7 @@ main {
 }
 
 .blog-post-item > a:hover .blog-item-title {
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
 }
 
 .blog-text {
@@ -1527,7 +1527,7 @@ main {
 }
 
 .form-input:focus {
-  border-color: var(--orange-yellow-crayola);
+  border-color: #ff3c00;
 }
 
 textarea.form-input {
@@ -1550,7 +1550,7 @@ textarea.form-input::-webkit-resizer {
   position: relative;
   width: 100%;
   background: var(--border-gradient-onyx);
-  color: var(--orange-yellow-crayola);
+  color: #ff3c00;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1999,8 +1999,8 @@ textarea.form-input::-webkit-resizer {
   }
 
   .filter-item button.active {
-    color: var(--orange-yellow-crayola);
-    background: hsla(45, 100%, 72%, 0.1);
+    color: #ff3c00;
+    background: hsla(14, 100%, 50%, 0.1);
   }
 
   .project-list,
@@ -2259,13 +2259,13 @@ textarea.form-input::-webkit-resizer {
 
 @media (prefers-contrast: high) {
   :root {
-    --orange-yellow-crayola: #FFA500;
+    --orange-yellow-crayola: #ff3c00;
     --light-gray: hsl(0, 0%, 90%);
   }
 
   .navbar-link.active,
   .filter-item button.active {
-    border: 2px solid var(--orange-yellow-crayola);
+    border: 2px solid #ff3c00;
   }
 }
 
