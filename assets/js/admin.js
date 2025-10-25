@@ -205,6 +205,11 @@ function showDashboard() {
 function switchTab(e) {
   const tabName = e.target.dataset.tab;
   
+  // Clear bulk selections when switching tabs
+  Object.keys(selectedItems).forEach(category => {
+    clearAllSelections(category);
+  });
+  
   // Remove active class from all tabs and contents
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -689,14 +694,21 @@ function loadProjects(projects) {
 
   list.innerHTML = projects.map(project => `
     <div class="item-card">
-      <div class="item-info">
-        <div class="item-title">${project.title}</div>
-        <div class="item-meta">
-          <span>${project.category}</span> • <span>${project.status}</span>
-          ${project.featured ? ' • <strong style="color: #ff3c00;">⭐ Featured</strong>' : ''}
+      <div class="item-header">
+        <input type="checkbox" 
+          class="item-checkbox" 
+          data-item-id="${project.id}" 
+          data-category="projects"
+          onchange="toggleItemSelection(${project.id}, 'projects')">
+        <div class="item-info">
+          <div class="item-title">${project.title}</div>
+          <div class="item-meta">
+            <span>${project.category}</span> • <span>${project.status}</span>
+            ${project.featured ? ' • <strong style="color: #ff3c00;">⭐ Featured</strong>' : ''}
+          </div>
+          <div class="item-description">${project.description.substring(0, 100)}...</div>
+          ${project.techStack ? `<div class="item-meta">Tech: ${project.techStack}</div>` : ''}
         </div>
-        <div class="item-description">${project.description.substring(0, 100)}...</div>
-        ${project.techStack ? `<div class="item-meta">Tech: ${project.techStack}</div>` : ''}
       </div>
       <div class="item-actions">
         <button class="btn btn-preview" onclick="previewProject(${JSON.stringify(project).replace(/"/g, '&quot;')})">👁️ Preview</button>
@@ -1374,6 +1386,177 @@ async function updateCompressionPreview(file, quality) {
     document.getElementById('compressedSizeDisplay').textContent = 'Error';
     document.getElementById('savingsDisplay').textContent = error.message;
   }
+}
+
+// ===============================================
+// PHASE 2: BULK ACTIONS
+// ===============================================
+
+// Track selected items per category
+const selectedItems = {
+  projects: new Set(),
+  blog: new Set(),
+  certifications: new Set(),
+  skills: new Set(),
+  testimonials: new Set()
+};
+
+// Toggle item selection
+function toggleItemSelection(itemId, category) {
+  if (selectedItems[category].has(itemId)) {
+    selectedItems[category].delete(itemId);
+  } else {
+    selectedItems[category].add(itemId);
+  }
+  
+  updateBulkActionsUI(category);
+  updateItemCardSelection(itemId, category);
+}
+
+// Update item card visual selection
+function updateItemCardSelection(itemId, category) {
+  const checkbox = document.querySelector(`[data-item-id="${itemId}"][data-category="${category}"]`);
+  if (checkbox) {
+    const card = checkbox.closest('.item-card');
+    if (card) {
+      if (selectedItems[category].has(itemId)) {
+        card.classList.add('selected');
+        checkbox.checked = true;
+      } else {
+        card.classList.remove('selected');
+        checkbox.checked = false;
+      }
+    }
+  }
+}
+
+// Update bulk actions UI visibility and count
+function updateBulkActionsUI(category) {
+  const count = selectedItems[category].size;
+  const toolbar = document.getElementById(`bulkActionsToolbar`);
+  const selectAllCheckbox = document.getElementById(`selectAll${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  const countDisplay = document.getElementById(`selectedCount${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  
+  if (toolbar) {
+    toolbar.style.display = count > 0 ? 'flex' : 'none';
+  }
+  
+  if (countDisplay) {
+    countDisplay.textContent = `${count} selected`;
+  }
+  
+  if (selectAllCheckbox) {
+    const data = getAdminData();
+    const totalItems = data[category]?.length || 0;
+    selectAllCheckbox.checked = count === totalItems && totalItems > 0;
+    selectAllCheckbox.indeterminate = count > 0 && count < totalItems;
+  }
+}
+
+// Toggle select all items
+function toggleSelectAll(category) {
+  const data = getAdminData();
+  const items = data[category] || [];
+  
+  const selectAllCheckbox = document.getElementById(`selectAll${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  
+  if (selectAllCheckbox?.checked) {
+    selectedItems[category] = new Set(items.map(item => item.id));
+  } else {
+    selectedItems[category] = new Set();
+  }
+  
+  // Update all checkboxes and cards
+  items.forEach(item => {
+    updateItemCardSelection(item.id, category);
+  });
+  
+  updateBulkActionsUI(category);
+}
+
+// Bulk delete with confirmation
+function bulkDeleteItems(category) {
+  if (selectedItems[category].size === 0) {
+    showNotification('No items selected', true);
+    return;
+  }
+  
+  const count = selectedItems[category].size;
+  if (!confirm(`Are you sure you want to delete ${count} ${category}? This cannot be undone.`)) {
+    return;
+  }
+  
+  const data = getAdminData();
+  data[category] = data[category].filter(item => !selectedItems[category].has(item.id));
+  
+  saveAdminData(data);
+  logActivity(`Bulk deleted ${count} ${category}`);
+  
+  selectedItems[category] = new Set();
+  updateBulkActionsUI(category);
+  
+  // Reload the list
+  const loadFunction = {
+    projects: loadProjects,
+    blog: loadBlog,
+    certifications: loadCertifications,
+    skills: loadSkills,
+    testimonials: loadTestimonials
+  }[category];
+  
+  if (loadFunction) {
+    loadFunction(data[category]);
+  }
+  
+  showNotification(`✓ Deleted ${count} ${category} successfully!`);
+}
+
+// Bulk export items
+function bulkExportItems(category) {
+  if (selectedItems[category].size === 0) {
+    showNotification('No items selected', true);
+    return;
+  }
+  
+  const data = getAdminData();
+  const selected = data[category].filter(item => selectedItems[category].has(item.id));
+  
+  // Create export data
+  const exportData = {
+    category: category,
+    exportDate: new Date().toISOString(),
+    itemCount: selected.length,
+    items: selected
+  };
+  
+  // Download as JSON
+  const dataStr = JSON.stringify(exportData, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${category}_export_${new Date().getTime()}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  
+  logActivity(`Exported ${selected.length} ${category}`);
+  showNotification(`✓ Exported ${selected.length} items!`);
+}
+
+// Clear all selections
+function clearAllSelections(category) {
+  selectedItems[category] = new Set();
+  updateBulkActionsUI(category);
+  
+  // Uncheck all checkboxes
+  document.querySelectorAll(`[data-category="${category}"]`).forEach(checkbox => {
+    checkbox.checked = false;
+  });
+  
+  // Remove selection styling
+  document.querySelectorAll('.item-card.selected').forEach(card => {
+    card.classList.remove('selected');
+  });
 }
 
 // ===============================================

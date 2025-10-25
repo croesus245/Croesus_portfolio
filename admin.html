@@ -209,6 +209,19 @@
             <button class="btn btn-primary" id="addProjectBtn">+ Add New Project</button>
           </div>
 
+          <!-- Bulk Actions Toolbar -->
+          <div class="bulk-actions-toolbar" id="bulkActionsToolbar" style="display: none;">
+            <div class="bulk-actions-info">
+              <input type="checkbox" id="selectAllProjects" class="select-all-checkbox">
+              <span id="selectedCountProjects" class="selected-count">0 selected</span>
+            </div>
+            <div class="bulk-actions-buttons">
+              <button class="btn btn-danger" id="bulkDeleteProjects" onclick="bulkDeleteItems('projects')">🗑️ Delete Selected</button>
+              <button class="btn" id="bulkExportProjects" onclick="bulkExportItems('projects')">📥 Export Selected</button>
+              <button class="btn" onclick="clearAllSelections('projects')" style="background: #f0f0f0; color: #333;">✕ Cancel</button>
+            </div>
+          </div>
+
           <!-- Projects List -->
           <div class="projects-list" id="projectsList">
             <p class="empty-state">No projects added yet. Click "Add New Project" to get started.</p>
