@@ -55,9 +55,22 @@
         <button class="btn btn-logout" id="logoutBtn">Logout</button>
       </header>
 
+      <!-- Search Bar -->
+      <div class="admin-search-bar">
+        <input 
+          type="text" 
+          id="globalSearch" 
+          class="search-input" 
+          placeholder="🔍 Search projects, blog, skills... (Press / to focus)"
+          autocomplete="off"
+        >
+        <div class="search-results-dropdown" id="searchResults" style="display: none;"></div>
+      </div>
+
       <!-- Navigation Tabs -->
       <nav class="admin-nav">
-        <button class="nav-tab active" data-tab="projects">📁 Projects</button>
+        <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+        <button class="nav-tab" data-tab="projects">📁 Projects</button>
         <button class="nav-tab" data-tab="certifications">🏆 Certifications</button>
         <button class="nav-tab" data-tab="blog">📝 Blog Posts</button>
         <button class="nav-tab" data-tab="skills">⭐ Skills</button>
@@ -67,6 +80,127 @@
 
       <!-- Main Content Area -->
       <main class="admin-content">
+
+        <!-- DASHBOARD TAB -->
+        <section class="tab-content active" data-tab-content="dashboard">
+          <div class="dashboard-header">
+            <h2>Dashboard Overview</h2>
+            <div class="sync-status">
+              <span id="syncIndicator" class="sync-dot"></span>
+              Last synced: <span id="lastSyncDisplay">Never</span>
+            </div>
+          </div>
+
+          <!-- Analytics Cards -->
+          <div class="analytics-grid">
+            <div class="analytics-card">
+              <div class="card-icon">👁️</div>
+              <div class="card-content">
+                <div class="card-label">Portfolio Views (Today)</div>
+                <div class="card-value" id="viewsToday">0</div>
+                <div class="card-change" id="viewsChange">-</div>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="card-icon">🔗</div>
+              <div class="card-content">
+                <div class="card-label">Project Clicks (Today)</div>
+                <div class="card-value" id="clicksToday">0</div>
+                <div class="card-change" id="clicksChange">-</div>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="card-icon">📖</div>
+              <div class="card-content">
+                <div class="card-label">Blog Reads (Today)</div>
+                <div class="card-value" id="readsToday">0</div>
+                <div class="card-change" id="readsChange">-</div>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="card-icon">✉️</div>
+              <div class="card-content">
+                <div class="card-label">Contact Forms (Today)</div>
+                <div class="card-value" id="contactsToday">0</div>
+                <div class="card-change" id="contactsChange">-</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="dashboard-section">
+            <h3>📋 Content Summary</h3>
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-number" id="totalProjects">0</div>
+                <div class="stat-label">Total Projects</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="totalBlog">0</div>
+                <div class="stat-label">Blog Posts</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="totalCerts">0</div>
+                <div class="stat-label">Certifications</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="totalSkills">0</div>
+                <div class="stat-label">Skills</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="totalTestimonials">0</div>
+                <div class="stat-label">Testimonials</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="dashboard-section">
+            <h3>📝 Recent Activity</h3>
+            <div class="activity-log" id="activityLog">
+              <div class="activity-item">
+                <div class="activity-time">Just now</div>
+                <div class="activity-message">Dashboard loaded</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="dashboard-section">
+            <h3>⚡ Quick Actions</h3>
+            <div class="quick-actions-grid">
+              <button class="quick-action-btn" onclick="switchTabAndOpenForm('projects', 'addProjectBtn')">
+                <span class="action-icon">➕</span>
+                <span>Add Project</span>
+              </button>
+              <button class="quick-action-btn" onclick="switchTabAndOpenForm('blog', 'addBlogBtn')">
+                <span class="action-icon">✍️</span>
+                <span>Write Blog</span>
+              </button>
+              <button class="quick-action-btn" onclick="switchTabAndOpenForm('skills', 'addSkillBtn')">
+                <span class="action-icon">⭐</span>
+                <span>Add Skill</span>
+              </button>
+              <button class="quick-action-btn" onclick="switchTabAndOpenForm('certifications', 'addCertBtn')">
+                <span class="action-icon">🏆</span>
+                <span>Add Cert</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sync Status -->
+          <div class="dashboard-section">
+            <h3>🚀 Publishing</h3>
+            <div class="sync-section">
+              <p>All changes are automatically saved to your admin data.</p>
+              <p style="font-size: 12px; color: #888; margin-top: 8px;">To deploy changes to your live portfolio, click the sync button below.</p>
+              <button class="btn btn-primary" id="dashboardSyncBtn" style="margin-top: 15px;">🔄 Sync to Portfolio Now</button>
+            </div>
+          </div>
+        </section>
 
         <!-- PROJECTS TAB -->
         <section class="tab-content active" data-tab-content="projects">
@@ -476,6 +610,24 @@
           <button type="button" class="btn btn-secondary" id="cancelChangePassword">Cancel</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="form-modal" id="previewModal" style="display:none;">
+    <div class="modal-overlay" id="previewModalOverlay"></div>
+    <div class="modal-content wide-modal preview-content">
+      <div class="modal-header">
+        <h3>👁️ Preview</h3>
+        <button class="modal-close-btn" id="closePreview">&times;</button>
+      </div>
+      <div class="preview-body" id="previewBody">
+        <!-- Preview content will be inserted here -->
+      </div>
+      <div class="preview-footer">
+        <a class="btn btn-primary" id="previewLiveLink" href="#" target="_blank">🔗 View on Portfolio</a>
+        <button class="btn btn-secondary" id="closePreviewBtn">Close</button>
+      </div>
     </div>
   </div>
 

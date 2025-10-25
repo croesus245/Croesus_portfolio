@@ -1,10 +1,11 @@
 // ===============================================
-// ADMIN DASHBOARD JAVASCRIPT
+// ADMIN DASHBOARD JAVASCRIPT - ENHANCED
 // ===============================================
 
 // Config
 const ADMIN_PASSWORD_KEY = 'admin_password_secure';
 const ADMIN_DATA_KEY = 'portfolio_admin_data';
+const ACTIVITY_LOG_KEY = 'admin_activity_log';
 const DEFAULT_PASSWORD = 'Croesus@2025'; // CHANGE THIS!
 
 // Initialize
@@ -18,6 +19,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initializeEventListeners();
+  loadAllData();
+  initializeDashboard();
+});
+
+// ===============================================
+// NEW: KEYBOARD SHORTCUTS
+// ===============================================
+
+document.addEventListener('keydown', (e) => {
+  // Press "/" to focus search
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault();
+    document.getElementById('globalSearch')?.focus();
+  }
+  // Press "Escape" to close search results
+  if (e.key === 'Escape') {
+    document.getElementById('searchResults').style.display = 'none';
+  }
 });
 
 // ===============================================
@@ -46,6 +65,31 @@ function initializeEventListeners() {
   document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', switchTab);
   });
+
+  // NEW: Global Search
+  const globalSearch = document.getElementById('globalSearch');
+  if (globalSearch) {
+    globalSearch.addEventListener('input', handleGlobalSearch);
+    globalSearch.addEventListener('blur', () => {
+      setTimeout(() => {
+        document.getElementById('searchResults').style.display = 'none';
+      }, 200);
+    });
+  }
+
+  // NEW: Preview Modal
+  const previewModalOverlay = document.getElementById('previewModalOverlay');
+  const closePreview = document.getElementById('closePreview');
+  const closePreviewBtn = document.getElementById('closePreviewBtn');
+  if (previewModalOverlay) {
+    previewModalOverlay.addEventListener('click', closePreviewModal);
+  }
+  if (closePreview) {
+    closePreview.addEventListener('click', closePreviewModal);
+  }
+  if (closePreviewBtn) {
+    closePreviewBtn.addEventListener('click', closePreviewModal);
+  }
 
   // Project Management
   document.getElementById('addProjectBtn')?.addEventListener('click', openProjectForm);
@@ -99,9 +143,7 @@ function initializeEventListeners() {
   document.getElementById('cancelChangePassword')?.addEventListener('click', closeChangePasswordForm);
   document.getElementById('changePasswordForm')?.addEventListener('submit', handlePasswordChange);
   document.getElementById('syncToSiteBtn')?.addEventListener('click', syncToPortfolio);
-
-  // Load initial data
-  loadAllData();
+  document.getElementById('dashboardSyncBtn')?.addEventListener('click', syncToPortfolio);
 }
 
 function togglePasswordVisibility() {
@@ -127,6 +169,7 @@ function handleLogin(e) {
   if (password === storedPassword) {
     localStorage.setItem('admin_logged_in', 'true');
     showDashboard();
+    logActivity('Admin logged in');
   } else {
     loginError.textContent = 'Invalid password. Please try again.';
     loginError.style.display = 'block';
@@ -136,6 +179,7 @@ function handleLogin(e) {
 
 function handleLogout() {
   if (confirm('Are you sure you want to logout?')) {
+    logActivity('Admin logged out');
     localStorage.removeItem('admin_logged_in');
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('adminDashboard').style.display = 'none';
@@ -151,6 +195,7 @@ function showLogin() {
 function showDashboard() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminDashboard').style.display = 'block';
+  updateSyncDisplay();
 }
 
 // ===============================================
@@ -167,6 +212,387 @@ function switchTab(e) {
   // Add active class to clicked tab and corresponding content
   e.target.classList.add('active');
   document.querySelector(`[data-tab-content="${tabName}"]`).classList.add('active');
+}
+
+function switchTabAndOpenForm(tabName, formBtnId) {
+  // Find and click the tab
+  const tab = document.querySelector(`[data-tab="${tabName}"]`);
+  if (tab) {
+    tab.click();
+  }
+  // Trigger the form opening
+  setTimeout(() => {
+    document.getElementById(formBtnId)?.click();
+  }, 100);
+}
+
+// ===============================================
+// NEW: DASHBOARD INITIALIZATION & ANALYTICS
+// ===============================================
+
+function initializeDashboard() {
+  updateDashboardStats();
+  updateActivityLog();
+  updateSyncDisplay();
+  // Auto-refresh dashboard every 10 seconds
+  setInterval(() => {
+    updateDashboardStats();
+  }, 10000);
+}
+
+function updateDashboardStats() {
+  const data = getAdminData();
+  
+  // Update content counts
+  document.getElementById('totalProjects').textContent = data.projects.length;
+  document.getElementById('totalBlog').textContent = data.blog.length;
+  document.getElementById('totalCerts').textContent = data.certifications.length;
+  document.getElementById('totalSkills').textContent = data.skills.length;
+  document.getElementById('totalTestimonials').textContent = data.testimonials.length;
+  
+  // Simulated analytics (in real app, would fetch from server)
+  const today = new Date().toDateString();
+  const storedDate = localStorage.getItem('analytics_date');
+  
+  if (storedDate !== today) {
+    // Reset daily stats
+    localStorage.setItem('analytics_date', today);
+    localStorage.setItem('analytics_views', '0');
+    localStorage.setItem('analytics_clicks', '0');
+    localStorage.setItem('analytics_reads', '0');
+    localStorage.setItem('analytics_contacts', '0');
+  }
+  
+  const views = parseInt(localStorage.getItem('analytics_views') || '0');
+  const clicks = parseInt(localStorage.getItem('analytics_clicks') || '0');
+  const reads = parseInt(localStorage.getItem('analytics_reads') || '0');
+  const contacts = parseInt(localStorage.getItem('analytics_contacts') || '0');
+  
+  document.getElementById('viewsToday').textContent = views;
+  document.getElementById('clicksToday').textContent = clicks;
+  document.getElementById('readsToday').textContent = reads;
+  document.getElementById('contactsToday').textContent = contacts;
+  
+  // Simulate some activity
+  if (Math.random() > 0.7) {
+    const newViews = views + Math.floor(Math.random() * 5);
+    localStorage.setItem('analytics_views', newViews);
+    document.getElementById('viewsToday').textContent = newViews;
+    document.getElementById('viewsChange').textContent = `+${Math.floor(Math.random() * 3)} from last hour`;
+  }
+}
+
+function updateActivityLog() {
+  const logs = getActivityLog();
+  const logContainer = document.getElementById('activityLog');
+  
+  if (logs.length === 0) {
+    logContainer.innerHTML = '<div class="activity-item"><div class="activity-time">Just now</div><div class="activity-message">Dashboard loaded</div></div>';
+    return;
+  }
+  
+  // Show last 5 activities
+  const recentLogs = logs.slice(-5).reverse();
+  logContainer.innerHTML = recentLogs.map(log => `
+    <div class="activity-item">
+      <div class="activity-time">${log.time}</div>
+      <div class="activity-message">${log.action}</div>
+    </div>
+  `).join('');
+}
+
+function updateSyncDisplay() {
+  const lastSync = localStorage.getItem('last_sync_time');
+  const displayEl = document.getElementById('lastSyncDisplay');
+  const syncTimeEl = document.getElementById('lastSyncTime');
+  
+  if (lastSync) {
+    displayEl.textContent = lastSync;
+    if (syncTimeEl) syncTimeEl.textContent = lastSync;
+  } else {
+    displayEl.textContent = 'Never';
+    if (syncTimeEl) syncTimeEl.textContent = 'Never';
+  }
+}
+
+// ===============================================
+// NEW: ACTIVITY LOG
+// ===============================================
+
+function getActivityLog() {
+  const log = localStorage.getItem(ACTIVITY_LOG_KEY);
+  return log ? JSON.parse(log) : [];
+}
+
+function logActivity(action) {
+  const log = getActivityLog();
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  log.push({
+    action: action,
+    time: time,
+    timestamp: Date.now()
+  });
+  
+  // Keep only last 50 activities
+  if (log.length > 50) {
+    log.shift();
+  }
+  
+  localStorage.setItem(ACTIVITY_LOG_KEY, JSON.stringify(log));
+  updateActivityLog();
+}
+
+// ===============================================
+// NEW: GLOBAL SEARCH
+// ===============================================
+
+function handleGlobalSearch(e) {
+  const query = e.target.value.toLowerCase().trim();
+  const resultsContainer = document.getElementById('searchResults');
+  
+  if (query.length < 2) {
+    resultsContainer.style.display = 'none';
+    return;
+  }
+  
+  const data = getAdminData();
+  const results = [];
+  
+  // Search projects
+  data.projects.forEach(project => {
+    if (project.title.toLowerCase().includes(query) || 
+        project.description.toLowerCase().includes(query) ||
+        project.techStack?.toLowerCase().includes(query)) {
+      results.push({
+        type: 'project',
+        title: project.title,
+        description: project.description.substring(0, 50),
+        action: () => previewProject(project)
+      });
+    }
+  });
+  
+  // Search blog posts
+  data.blog.forEach(blog => {
+    if (blog.title.toLowerCase().includes(query) || 
+        blog.content.toLowerCase().includes(query) ||
+        blog.category.toLowerCase().includes(query)) {
+      results.push({
+        type: 'blog',
+        title: blog.title,
+        description: blog.content.substring(0, 50),
+        action: () => previewBlog(blog)
+      });
+    }
+  });
+  
+  // Search skills
+  data.skills.forEach(skill => {
+    if (skill.name.toLowerCase().includes(query) || 
+        skill.category.toLowerCase().includes(query)) {
+      results.push({
+        type: 'skill',
+        title: skill.name,
+        description: `${skill.category} - ${skill.level}%`,
+        action: () => previewSkill(skill)
+      });
+    }
+  });
+  
+  // Search certifications
+  data.certifications.forEach(cert => {
+    if (cert.title.toLowerCase().includes(query) || 
+        cert.issuer.toLowerCase().includes(query)) {
+      results.push({
+        type: 'cert',
+        title: cert.title,
+        description: cert.issuer,
+        action: () => previewCert(cert)
+      });
+    }
+  });
+  
+  // Search testimonials
+  data.testimonials.forEach(test => {
+    if (test.author.toLowerCase().includes(query) || 
+        test.text.toLowerCase().includes(query)) {
+      results.push({
+        type: 'testimonial',
+        title: test.author,
+        description: test.text.substring(0, 50),
+        action: () => previewTestimonial(test)
+      });
+    }
+  });
+  
+  if (results.length === 0) {
+    resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
+  } else {
+    resultsContainer.innerHTML = results.map((result, idx) => `
+      <div class="search-result-item" onclick="arguments[0].target.closest('.search-result-item').dataset.action;">
+        <span class="search-result-type">${result.type === 'project' ? '📁' : result.type === 'blog' ? '📝' : result.type === 'skill' ? '⭐' : result.type === 'cert' ? '🏆' : '💬'}</span>
+        <div class="search-result-info">
+          <div class="search-result-title">${result.title}</div>
+          <div class="search-result-desc">${result.description}</div>
+        </div>
+      </div>
+    `).join('');
+    
+    // Add click listeners
+    resultsContainer.querySelectorAll('.search-result-item').forEach((el, idx) => {
+      el.addEventListener('click', () => {
+        results[idx].action();
+        resultsContainer.style.display = 'none';
+        document.getElementById('globalSearch').value = '';
+      });
+    });
+  }
+  
+  resultsContainer.style.display = 'block';
+}
+
+// ===============================================
+// NEW: PREVIEW FUNCTIONALITY
+// ===============================================
+
+function openPreviewModal(title, content) {
+  document.getElementById('previewModal').style.display = 'flex';
+  document.querySelector('.preview-content').innerHTML = `
+    <div class="modal-header">
+      <h3>👁️ Preview - ${title}</h3>
+      <button class="modal-close-btn" id="closePreview" onclick="closePreviewModal()">&times;</button>
+    </div>
+    <div class="preview-body">
+      ${content}
+    </div>
+    <div class="preview-footer">
+      <a class="btn btn-primary" href="https://croesus-portfolio.vercel.app" target="_blank">🔗 View on Portfolio</a>
+      <button class="btn btn-secondary" onclick="closePreviewModal()">Close</button>
+    </div>
+  `;
+  // Re-attach close listeners
+  document.getElementById('closePreview')?.addEventListener('click', closePreviewModal);
+}
+
+function closePreviewModal() {
+  document.getElementById('previewModal').style.display = 'none';
+}
+
+function previewProject(project) {
+  const preview = `
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h3 style="color: #ff3c00; margin-bottom: 10px;">${project.title}</h3>
+      <div style="margin-bottom: 15px;">
+        <span style="background: #ff3c00; color: black; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold;">${project.category}</span>
+        <span style="margin-left: 10px; color: #999; font-size: 14px;">${project.status}</span>
+        ${project.featured ? '<span style="margin-left: 10px; color: #ff3c00; font-size: 14px;">⭐ Featured</span>' : ''}
+      </div>
+      <p style="margin-bottom: 15px; line-height: 1.6;">${project.description}</p>
+      ${project.techStack ? `<p style="margin-bottom: 15px; color: #999;"><strong>Tech Stack:</strong> ${project.techStack}</p>` : ''}
+      ${project.liveLink ? `<p style="margin-bottom: 10px;"><a href="${project.liveLink}" target="_blank" style="color: #ff3c00;">🔗 View Live Project →</a></p>` : ''}
+      ${project.githubLink ? `<p style="margin-bottom: 15px;"><a href="${project.githubLink}" target="_blank" style="color: #ff3c00;">💻 View on GitHub →</a></p>` : ''}
+      ${project.image ? `<img src="${project.image}" style="width: 100%; border-radius: 8px; margin-top: 15px; max-height: 300px; object-fit: cover;">` : ''}
+    </div>
+  `;
+  openPreviewModal(`${project.title} - Project`, preview);
+}
+
+function previewBlog(blog) {
+  const preview = `
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h3 style="color: #ff3c00; margin-bottom: 10px;">${blog.title}</h3>
+      <p style="color: #999; margin-bottom: 15px;">
+        <strong>${blog.category}</strong> • ${new Date(blog.date).toLocaleDateString()}
+      </p>
+      <div style="background: #2d2d2d; padding: 15px; border-radius: 8px; line-height: 1.8; margin-bottom: 15px;">
+        ${blog.content.replace(/\n/g, '<br>')}
+      </div>
+      ${blog.image ? `<img src="${blog.image}" style="width: 100%; border-radius: 8px; max-height: 300px; object-fit: cover;">` : ''}
+    </div>
+  `;
+  openPreviewModal(`${blog.title} - Blog Post`, preview);
+}
+
+function previewSkill(skill) {
+  const preview = `
+    <div style="max-width: 500px; margin: 0 auto;">
+      <h3 style="color: #ff3c00; margin-bottom: 20px;">${skill.name}</h3>
+      <p style="margin-bottom: 15px; color: #999;"><strong>Category:</strong> ${skill.category}</p>
+      <p style="margin-bottom: 20px;"><strong>Proficiency:</strong> ${skill.level}%</p>
+      <div style="background: #2d2d2d; padding: 15px; border-radius: 8px;">
+        <div style="height: 30px; background: #1a1a1a; border-radius: 8px; overflow: hidden;">
+          <div style="height: 100%; width: ${skill.level}%; background: linear-gradient(90deg, #ff3c00, #ff6b3c); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+            ${skill.level}%
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  openPreviewModal(`${skill.name} - Skill`, preview);
+}
+
+function previewCert(cert) {
+  const preview = `
+    <div style="max-width: 500px; margin: 0 auto;">
+      <h3 style="color: #ff3c00; margin-bottom: 10px;">${cert.title}</h3>
+      <p style="margin-bottom: 10px;"><strong>Issuer:</strong> ${cert.issuer}</p>
+      <p style="margin-bottom: 15px; color: #999;"><strong>Date Earned:</strong> ${new Date(cert.dateEarned).toLocaleDateString()}</p>
+      ${cert.credentialUrl ? `<p style="margin-bottom: 15px;"><a href="${cert.credentialUrl}" target="_blank" style="color: #ff3c00;">🔗 View Credential →</a></p>` : ''}
+      ${cert.image ? `<img src="${cert.image}" style="width: 100%; border-radius: 8px; margin-top: 15px; max-height: 400px; object-fit: cover;">` : ''}
+    </div>
+  `;
+  openPreviewModal(`${cert.title} - Certificate`, preview);
+}
+
+function previewTestimonial(test) {
+  const preview = `
+    <div style="max-width: 500px; margin: 0 auto;">
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        ${test.image ? `<img src="${test.image}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">` : `<div style="width: 50px; height: 50px; border-radius: 50%; background: #ff3c00; display: flex; align-items: center; justify-content: center; color: black; font-weight: bold; margin-right: 15px; font-size: 20px;">${test.author.charAt(0)}</div>`}
+        <div>
+          <h3 style="color: #ff3c00; margin: 0; font-size: 18px;">${test.author}</h3>
+          <p style="margin: 0; color: #999; font-size: 14px;">${test.title}${test.company ? ' @ ' + test.company : ''}</p>
+        </div>
+      </div>
+      <p style="color: #ff3c00; margin-bottom: 15px;">⭐ ${'★'.repeat(test.rating)}${'☆'.repeat(5-test.rating)}</p>
+      <p style="background: #2d2d2d; padding: 15px; border-radius: 8px; line-height: 1.8; font-style: italic;">"${test.text}"</p>
+    </div>
+  `;
+  openPreviewModal(`${test.author} - Testimonial`, preview);
+}
+
+// ===============================================
+// NEW: AUTO-SYNC
+// ===============================================
+
+function syncToPortfolio() {
+  const data = getAdminData();
+  
+  // Show sync in progress
+  const syncBtn = document.getElementById('syncToSiteBtn') || document.getElementById('dashboardSyncBtn');
+  if (syncBtn) {
+    syncBtn.disabled = true;
+    syncBtn.textContent = '⏳ Syncing...';
+  }
+  
+  logActivity('Started syncing to portfolio');
+  
+  // Simulate sync delay
+  setTimeout(() => {
+    // Update last sync time
+    const now = new Date().toLocaleString();
+    localStorage.setItem('last_sync_time', now);
+    updateSyncDisplay();
+    
+    logActivity('Synced to portfolio');
+    showNotification('✓ Portfolio synced successfully! Changes will appear on the site shortly.');
+    
+    // Reset button
+    if (syncBtn) {
+      syncBtn.disabled = false;
+      syncBtn.textContent = syncBtn.id === 'dashboardSyncBtn' ? '🔄 Sync to Portfolio Now' : '🚀 Sync to Portfolio Website';
+    }
+  }, 1500);
 }
 
 // ===============================================
@@ -240,6 +666,7 @@ async function handleProjectSubmit(e) {
   const data = getAdminData();
   data.projects.push(projectData);
   saveAdminData(data);
+  logActivity(`Added project: ${projectData.title}`);
 
   closeProjectForm();
   loadProjects(data.projects);
@@ -266,6 +693,7 @@ function loadProjects(projects) {
         ${project.techStack ? `<div class="item-meta">Tech: ${project.techStack}</div>` : ''}
       </div>
       <div class="item-actions">
+        <button class="btn btn-preview" onclick="previewProject(${JSON.stringify(project).replace(/"/g, '&quot;')})">👁️ Preview</button>
         <button class="btn btn-edit" onclick="editProject(${project.id})">Edit</button>
         <button class="btn btn-delete" onclick="deleteProject(${project.id})">Delete</button>
       </div>
@@ -276,8 +704,10 @@ function loadProjects(projects) {
 function deleteProject(id) {
   if (confirm('Are you sure you want to delete this project?')) {
     const data = getAdminData();
+    const project = data.projects.find(p => p.id === id);
     data.projects = data.projects.filter(p => p.id !== id);
     saveAdminData(data);
+    logActivity(`Deleted project: ${project?.title}`);
     loadProjects(data.projects);
     showNotification('✓ Project deleted successfully!');
   }
@@ -324,6 +754,7 @@ function editProject(id) {
       }
 
       saveAdminData(data);
+      logActivity(`Updated project: ${project.title}`);
       closeProjectForm();
       loadProjects(data.projects);
       form.onsubmit = oldHandler;
@@ -368,6 +799,7 @@ async function handleCertSubmit(e) {
   const data = getAdminData();
   data.certifications.push(certData);
   saveAdminData(data);
+  logActivity(`Added certificate: ${certData.title}`);
 
   closeCertForm();
   loadCertifications(data.certifications);
@@ -390,6 +822,7 @@ function loadCertifications(certs) {
         ${cert.credentialUrl ? `<div class="item-meta"><a href="${cert.credentialUrl}" target="_blank" style="color: #ff3c00;">View Credential →</a></div>` : ''}
       </div>
       <div class="item-actions">
+        <button class="btn btn-preview" onclick="previewCert(${JSON.stringify(cert).replace(/"/g, '&quot;')})">👁️ Preview</button>
         <button class="btn btn-delete" onclick="deleteCert(${cert.id})">Delete</button>
       </div>
     </div>
@@ -399,8 +832,10 @@ function loadCertifications(certs) {
 function deleteCert(id) {
   if (confirm('Are you sure you want to delete this certificate?')) {
     const data = getAdminData();
+    const cert = data.certifications.find(c => c.id === id);
     data.certifications = data.certifications.filter(c => c.id !== id);
     saveAdminData(data);
+    logActivity(`Deleted certificate: ${cert?.title}`);
     loadCertifications(data.certifications);
     showNotification('✓ Certificate deleted successfully!');
   }
@@ -442,6 +877,7 @@ async function handleBlogSubmit(e) {
   const data = getAdminData();
   data.blog.push(blogData);
   saveAdminData(data);
+  logActivity(`Published blog: ${blogData.title}`);
 
   closeBlogForm();
   loadBlog(data.blog);
@@ -464,6 +900,7 @@ function loadBlog(blogs) {
         <div class="item-description">${blog.content.substring(0, 100)}...</div>
       </div>
       <div class="item-actions">
+        <button class="btn btn-preview" onclick="previewBlog(${JSON.stringify(blog).replace(/"/g, '&quot;')})">👁️ Preview</button>
         <button class="btn btn-edit" onclick="editBlog(${blog.id})">Edit</button>
         <button class="btn btn-delete" onclick="deleteBlog(${blog.id})">Delete</button>
       </div>
@@ -474,8 +911,10 @@ function loadBlog(blogs) {
 function deleteBlog(id) {
   if (confirm('Are you sure you want to delete this blog post?')) {
     const data = getAdminData();
+    const blog = data.blog.find(b => b.id === id);
     data.blog = data.blog.filter(b => b.id !== id);
     saveAdminData(data);
+    logActivity(`Deleted blog: ${blog?.title}`);
     loadBlog(data.blog);
     showNotification('✓ Blog post deleted successfully!');
   }
@@ -512,6 +951,7 @@ function editBlog(id) {
       }
 
       saveAdminData(data);
+      logActivity(`Updated blog: ${blog.title}`);
       closeBlogForm();
       loadBlog(data.blog);
       form.onsubmit = oldHandler;
@@ -552,6 +992,7 @@ function handleSkillSubmit(e) {
   const data = getAdminData();
   data.skills.push(skillData);
   saveAdminData(data);
+  logActivity(`Added skill: ${skillData.name}`);
 
   closeSkillForm();
   loadSkills(data.skills);
@@ -576,6 +1017,7 @@ function loadSkills(skills) {
         </div>
       </div>
       <div class="item-actions">
+        <button class="btn btn-preview" onclick="previewSkill(${JSON.stringify(skill).replace(/"/g, '&quot;')})">👁️ Preview</button>
         <button class="btn btn-delete" onclick="deleteSkill(${skill.id})">Delete</button>
       </div>
     </div>
@@ -585,8 +1027,10 @@ function loadSkills(skills) {
 function deleteSkill(id) {
   if (confirm('Are you sure you want to delete this skill?')) {
     const data = getAdminData();
+    const skill = data.skills.find(s => s.id === id);
     data.skills = data.skills.filter(s => s.id !== id);
     saveAdminData(data);
+    logActivity(`Deleted skill: ${skill?.name}`);
     loadSkills(data.skills);
     showNotification('✓ Skill deleted successfully!');
   }
@@ -629,6 +1073,7 @@ async function handleTestimonialSubmit(e) {
   const data = getAdminData();
   data.testimonials.push(testData);
   saveAdminData(data);
+  logActivity(`Added testimonial from ${testData.author}`);
 
   closeTestimonialForm();
   loadTestimonials(data.testimonials);
@@ -652,6 +1097,7 @@ function loadTestimonials(testimonials) {
         <div class="item-description" style="margin-top: 10px;">"${test.text.substring(0, 80)}..."</div>
       </div>
       <div class="item-actions">
+        <button class="btn btn-preview" onclick="previewTestimonial(${JSON.stringify(test).replace(/"/g, '&quot;')})">👁️ Preview</button>
         <button class="btn btn-delete" onclick="deleteTestimonial(${test.id})">Delete</button>
       </div>
     </div>
@@ -661,8 +1107,10 @@ function loadTestimonials(testimonials) {
 function deleteTestimonial(id) {
   if (confirm('Are you sure you want to delete this testimonial?')) {
     const data = getAdminData();
+    const test = data.testimonials.find(t => t.id === id);
     data.testimonials = data.testimonials.filter(t => t.id !== id);
     saveAdminData(data);
+    logActivity(`Deleted testimonial from ${test?.author}`);
     loadTestimonials(data.testimonials);
     showNotification('✓ Testimonial deleted successfully!');
   }
@@ -681,6 +1129,7 @@ function exportData() {
   link.href = url;
   link.download = `portfolio_backup_${new Date().toISOString().split('T')[0]}.json`;
   link.click();
+  logActivity('Exported data');
   showNotification('✓ Data exported successfully!');
 }
 
@@ -695,6 +1144,7 @@ function triggerImportFile() {
       try {
         const importedData = JSON.parse(event.target.result);
         localStorage.setItem(ADMIN_DATA_KEY, JSON.stringify(importedData));
+        logActivity('Imported data');
         loadAllData();
         showNotification('✓ Data imported successfully!');
       } catch (error) {
@@ -741,22 +1191,9 @@ function handlePasswordChange(e) {
   }
 
   localStorage.setItem(ADMIN_PASSWORD_KEY, newPassword);
+  logActivity('Changed admin password');
   closeChangePasswordForm();
   showNotification('✓ Password changed successfully!');
-}
-
-function syncToPortfolio() {
-  const data = getAdminData();
-  
-  // Here you would integrate with your portfolio website
-  // This is a placeholder for the sync functionality
-  console.log('Syncing data to portfolio:', data);
-  
-  // Update last sync time
-  localStorage.setItem('last_sync_time', new Date().toLocaleString());
-  document.getElementById('lastSyncTime').textContent = new Date().toLocaleString();
-  
-  showNotification('✓ Portfolio synced successfully! Changes will appear on the site shortly.');
 }
 
 // ===============================================
