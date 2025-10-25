@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Ayinde Portfolio</title>
+  <link rel="stylesheet" href="./assets/css/admin-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="admin-container">
+    
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+      <div class="login-box">
+        <div class="login-header">
+          <h1>Admin Dashboard</h1>
+          <p>Ayinde Abdul-Sobur Portfolio</p>
+        </div>
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="password">Admin Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              placeholder="Enter admin password" 
+              required
+              autocomplete="off"
+            >
+            <span class="password-toggle" id="passwordToggle">👁️</span>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+          <p class="error-message" id="loginError" style="display:none;"></p>
+        </form>
+        <div class="login-info">
+          <p>🔒 This dashboard is password-protected.</p>
+          <p>Only authorized administrators can access.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-dashboard" id="adminDashboard" style="display:none;">
+      
+      <!-- Header -->
+      <header class="admin-header">
+        <div class="header-content">
+          <h1>Portfolio Admin Dashboard</h1>
+          <p>Welcome, <strong>Admin</strong></p>
+        </div>
+        <button class="btn btn-logout" id="logoutBtn">Logout</button>
+      </header>
+
+      <!-- Navigation Tabs -->
+      <nav class="admin-nav">
+        <button class="nav-tab active" data-tab="projects">📁 Projects</button>
+        <button class="nav-tab" data-tab="certifications">🏆 Certifications</button>
+        <button class="nav-tab" data-tab="blog">📝 Blog Posts</button>
+        <button class="nav-tab" data-tab="skills">⭐ Skills</button>
+        <button class="nav-tab" data-tab="testimonials">💬 Testimonials</button>
+        <button class="nav-tab" data-tab="settings">⚙️ Settings</button>
+      </nav>
+
+      <!-- Main Content Area -->
+      <main class="admin-content">
+
+        <!-- PROJECTS TAB -->
+        <section class="tab-content active" data-tab-content="projects">
+          <div class="content-header">
+            <h2>Manage Projects</h2>
+            <button class="btn btn-primary" id="addProjectBtn">+ Add New Project</button>
+          </div>
+
+          <!-- Projects List -->
+          <div class="projects-list" id="projectsList">
+            <p class="empty-state">No projects added yet. Click "Add New Project" to get started.</p>
+          </div>
+
+          <!-- Add/Edit Project Form -->
+          <div class="form-modal" id="projectFormModal" style="display:none;">
+            <div class="modal-overlay" id="projectFormOverlay"></div>
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 id="projectFormTitle">Add New Project</h3>
+                <button class="modal-close-btn" id="closeProjectForm">&times;</button>
+              </div>
+              <form id="projectForm" class="admin-form">
+                <div class="form-group">
+                  <label for="projectTitle">Project Title *</label>
+                  <input type="text" id="projectTitle" name="title" required placeholder="e.g., MWG by Sama">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="projectCategory">Category *</label>
+                    <select id="projectCategory" name="category" required>
+                      <option value="">Select category</option>
+                      <option value="web development">Web Development</option>
+                      <option value="web design">Web Design</option>
+                      <option value="ai-ml">AI/ML</option>
+                      <option value="gis">GIS/Geospatial</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="projectStatus">Status *</label>
+                    <select id="projectStatus" name="status" required>
+                      <option value="active">Active</option>
+                      <option value="completed">Completed</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="projectDescription">Description *</label>
+                  <textarea id="projectDescription" name="description" required placeholder="Project description" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="projectTechStack">Tech Stack</label>
+                  <input type="text" id="projectTechStack" name="techStack" placeholder="e.g., React, Node.js, PostgreSQL (comma-separated)">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="projectLink">Live Project Link</label>
+                    <input type="url" id="projectLink" name="liveLink" placeholder="https://example.com">
+                  </div>
+                  <div class="form-group">
+                    <label for="projectGithub">GitHub Repository</label>
+                    <input type="url" id="projectGithub" name="githubLink" placeholder="https://github.com/username/repo">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="projectImage">Project Image</label>
+                  <input type="file" id="projectImage" name="image" accept="image/*">
+                  <small>Upload a project image (JPG, PNG, WebP)</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="projectFeatured">
+                    <input type="checkbox" id="projectFeatured" name="featured">
+                    Featured Project (appears first)
+                  </label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Save Project</button>
+                  <button type="button" class="btn btn-secondary" id="cancelProjectForm">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- CERTIFICATIONS TAB -->
+        <section class="tab-content" data-tab-content="certifications">
+          <div class="content-header">
+            <h2>Manage Certifications</h2>
+            <button class="btn btn-primary" id="addCertBtn">+ Add New Certificate</button>
+          </div>
+
+          <div class="certifications-list" id="certificationsList">
+            <p class="empty-state">No certifications added yet.</p>
+          </div>
+
+          <!-- Add/Edit Certification Form -->
+          <div class="form-modal" id="certFormModal" style="display:none;">
+            <div class="modal-overlay" id="certFormOverlay"></div>
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3>Add New Certificate</h3>
+                <button class="modal-close-btn" id="closeCertForm">&times;</button>
+              </div>
+              <form id="certForm" class="admin-form">
+                <div class="form-group">
+                  <label for="certTitle">Certificate Title *</label>
+                  <input type="text" id="certTitle" name="title" required placeholder="e.g., Machine Learning Specialization">
+                </div>
+
+                <div class="form-group">
+                  <label for="certIssuer">Issuer *</label>
+                  <input type="text" id="certIssuer" name="issuer" required placeholder="e.g., Coursera, LinkedIn Learning">
+                </div>
+
+                <div class="form-group">
+                  <label for="certDate">Date Earned *</label>
+                  <input type="date" id="certDate" name="dateEarned" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="certLink">Certificate Link / Credential URL</label>
+                  <input type="url" id="certLink" name="credentialUrl" placeholder="https://example.com/credential">
+                </div>
+
+                <div class="form-group">
+                  <label for="certImage">Certificate Image *</label>
+                  <input type="file" id="certImage" name="image" accept="image/*" required>
+                  <small>Upload certificate image (JPG, PNG)</small>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Add Certificate</button>
+                  <button type="button" class="btn btn-secondary" id="cancelCertForm">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- BLOG TAB -->
+        <section class="tab-content" data-tab-content="blog">
+          <div class="content-header">
+            <h2>Manage Blog Posts</h2>
+            <button class="btn btn-primary" id="addBlogBtn">+ Write New Article</button>
+          </div>
+
+          <div class="blog-list" id="blogList">
+            <p class="empty-state">No blog posts added yet.</p>
+          </div>
+
+          <!-- Add/Edit Blog Form -->
+          <div class="form-modal" id="blogFormModal" style="display:none;">
+            <div class="modal-overlay" id="blogFormOverlay"></div>
+            <div class="modal-content wide-modal">
+              <div class="modal-header">
+                <h3>Write New Article</h3>
+                <button class="modal-close-btn" id="closeBlogForm">&times;</button>
+              </div>
+              <form id="blogForm" class="admin-form">
+                <div class="form-group">
+                  <label for="blogTitle">Article Title *</label>
+                  <input type="text" id="blogTitle" name="title" required placeholder="e.g., The Future of AI in GIS">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="blogCategory">Category *</label>
+                    <select id="blogCategory" name="category" required>
+                      <option value="">Select category</option>
+                      <option value="tech">Tech</option>
+                      <option value="gis">GIS</option>
+                      <option value="career">Career</option>
+                      <option value="tutorial">Tutorial</option>
+                      <option value="personal">Personal</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="blogDate">Publication Date *</label>
+                    <input type="date" id="blogDate" name="date" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="blogContent">Article Content *</label>
+                  <textarea id="blogContent" name="content" required placeholder="Write your article here..." rows="10"></textarea>
+                  <small>You can use basic markdown or plain text</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="blogImage">Featured Image</label>
+                  <input type="file" id="blogImage" name="image" accept="image/*">
+                  <small>Upload a featured image for the article</small>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Publish Article</button>
+                  <button type="button" class="btn btn-secondary" id="cancelBlogForm">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- SKILLS TAB -->
+        <section class="tab-content" data-tab-content="skills">
+          <div class="content-header">
+            <h2>Manage Skills</h2>
+            <button class="btn btn-primary" id="addSkillBtn">+ Add Skill</button>
+          </div>
+
+          <div class="skills-list" id="skillsList">
+            <p class="empty-state">No skills added yet.</p>
+          </div>
+
+          <!-- Add/Edit Skill Form -->
+          <div class="form-modal" id="skillFormModal" style="display:none;">
+            <div class="modal-overlay" id="skillFormOverlay"></div>
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3>Add New Skill</h3>
+                <button class="modal-close-btn" id="closeSkillForm">&times;</button>
+              </div>
+              <form id="skillForm" class="admin-form">
+                <div class="form-group">
+                  <label for="skillName">Skill Name *</label>
+                  <input type="text" id="skillName" name="name" required placeholder="e.g., React, Python">
+                </div>
+
+                <div class="form-group">
+                  <label for="skillLevel">Proficiency Level * (%)</label>
+                  <div class="skill-slider-container">
+                    <input type="range" id="skillLevel" name="level" min="0" max="100" value="50" class="skill-slider">
+                    <span class="skill-value" id="skillValue">50%</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="skillCategory">Category</label>
+                  <select id="skillCategory" name="category">
+                    <option value="programming">Programming</option>
+                    <option value="tools">Tools & Software</option>
+                    <option value="design">Design</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Add Skill</button>
+                  <button type="button" class="btn btn-secondary" id="cancelSkillForm">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- TESTIMONIALS TAB -->
+        <section class="tab-content" data-tab-content="testimonials">
+          <div class="content-header">
+            <h2>Manage Testimonials</h2>
+            <button class="btn btn-primary" id="addTestimonialBtn">+ Add Testimonial</button>
+          </div>
+
+          <div class="testimonials-list" id="testimonialsList">
+            <p class="empty-state">No testimonials added yet.</p>
+          </div>
+
+          <!-- Add Testimonial Form -->
+          <div class="form-modal" id="testimonialFormModal" style="display:none;">
+            <div class="modal-overlay" id="testimonialFormOverlay"></div>
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3>Add New Testimonial</h3>
+                <button class="modal-close-btn" id="closeTestimonialForm">&times;</button>
+              </div>
+              <form id="testimonialForm" class="admin-form">
+                <div class="form-group">
+                  <label for="testAuthor">Author Name *</label>
+                  <input type="text" id="testAuthor" name="author" required placeholder="e.g., John Doe">
+                </div>
+
+                <div class="form-group">
+                  <label for="testTitle">Author Title</label>
+                  <input type="text" id="testTitle" name="title" placeholder="e.g., CEO, Project Manager">
+                </div>
+
+                <div class="form-group">
+                  <label for="testCompany">Company</label>
+                  <input type="text" id="testCompany" name="company" placeholder="Company name">
+                </div>
+
+                <div class="form-group">
+                  <label for="testText">Testimonial Text *</label>
+                  <textarea id="testText" name="text" required placeholder="What do you want to say about Ayinde?" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="testRating">Rating (1-5)</label>
+                  <select id="testRating" name="rating">
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                    <option value="3">⭐⭐⭐ (3/5)</option>
+                    <option value="2">⭐⭐ (2/5)</option>
+                    <option value="1">⭐ (1/5)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="testImage">Profile Image</label>
+                  <input type="file" id="testImage" name="image" accept="image/*">
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Add Testimonial</button>
+                  <button type="button" class="btn btn-secondary" id="cancelTestimonialForm">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS TAB -->
+        <section class="tab-content" data-tab-content="settings">
+          <div class="content-header">
+            <h2>Dashboard Settings</h2>
+          </div>
+
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3>📊 Data Management</h3>
+              <div class="settings-content">
+                <p>Export or reset your portfolio data.</p>
+                <div class="button-group">
+                  <button class="btn btn-secondary" id="exportDataBtn">📥 Export Data (JSON)</button>
+                  <button class="btn btn-secondary" id="importDataBtn">📤 Import Data (JSON)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3>🔐 Security</h3>
+              <div class="settings-content">
+                <p>Change your admin password.</p>
+                <div class="button-group">
+                  <button class="btn btn-secondary" id="changePasswordBtn">Change Password</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3>📤 Publishing</h3>
+              <div class="settings-content">
+                <p>Sync your changes to the main portfolio and deploy.</p>
+                <div class="button-group">
+                  <button class="btn btn-primary" id="syncToSiteBtn">🚀 Sync to Portfolio Website</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3>ℹ️ About</h3>
+              <div class="settings-content">
+                <p><strong>Portfolio Admin Dashboard v1.0</strong></p>
+                <p>Secure content management system for Ayinde Abdul-Sobur's portfolio.</p>
+                <p style="font-size: 12px; color: #888; margin-top: 10px;">Last synced: <span id="lastSyncTime">Never</span></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- Change Password Modal -->
+  <div class="form-modal" id="changePasswordModal" style="display:none;">
+    <div class="modal-overlay" id="changePasswordOverlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Change Admin Password</h3>
+        <button class="modal-close-btn" id="closeChangePassword">&times;</button>
+      </div>
+      <form id="changePasswordForm" class="admin-form">
+        <div class="form-group">
+          <label for="currentPassword">Current Password *</label>
+          <input type="password" id="currentPassword" required placeholder="Enter current password">
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New Password *</label>
+          <input type="password" id="newPassword" required placeholder="Enter new password">
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password *</label>
+          <input type="password" id="confirmPassword" required placeholder="Confirm new password">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Update Password</button>
+          <button type="button" class="btn btn-secondary" id="cancelChangePassword">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Notification -->
+  <div class="notification" id="notification" style="display:none;">
+    <span id="notificationText"></span>
+  </div>
+
+  <script src="./assets/js/admin.js"></script>
+</body>
+</html>
