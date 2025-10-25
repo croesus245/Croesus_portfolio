@@ -622,11 +622,20 @@ function saveAdminData(data) {
 
 function loadAllData() {
   const data = getAdminData();
-  loadProjects(data.projects);
-  loadCertifications(data.certifications);
-  loadBlog(data.blog);
-  loadSkills(data.skills);
-  loadTestimonials(data.testimonials);
+  
+  // Initialize sort/filter state with all data
+  contentState.projects.allItems = data.projects;
+  contentState.certifications.allItems = data.certifications;
+  contentState.blog.allItems = data.blog;
+  contentState.skills.allItems = data.skills;
+  contentState.testimonials.allItems = data.testimonials;
+  
+  // Apply sorting/filtering and display
+  applySort('projects');
+  applySort('certifications');
+  applySort('blog');
+  applySort('skills');
+  applySort('testimonials');
 }
 
 // ===============================================
@@ -679,8 +688,11 @@ async function handleProjectSubmit(e) {
   saveAdminData(data);
   logActivity(`Added project: ${projectData.title}`);
 
+  contentState.projects.allItems = data.projects;
+  contentState.projects.currentPage = 1;
+  
   closeProjectForm();
-  loadProjects(data.projects);
+  applySort('projects');
   showNotification('✓ Project added successfully!');
 }
 
@@ -726,7 +738,9 @@ function deleteProject(id) {
     data.projects = data.projects.filter(p => p.id !== id);
     saveAdminData(data);
     logActivity(`Deleted project: ${project?.title}`);
-    loadProjects(data.projects);
+    contentState.projects.allItems = data.projects;
+    contentState.projects.currentPage = 1;
+    applySort('projects');
     showNotification('✓ Project deleted successfully!');
   }
 }
@@ -779,8 +793,10 @@ function editProject(id) {
 
       saveAdminData(data);
       logActivity(`Updated project: ${project.title}`);
+      contentState.projects.allItems = data.projects;
+      contentState.projects.currentPage = 1;
       closeProjectForm();
-      loadProjects(data.projects);
+      applySort('projects');
       form.onsubmit = oldHandler;
       showNotification('✓ Project updated successfully!');
     };
@@ -831,8 +847,11 @@ async function handleCertSubmit(e) {
   saveAdminData(data);
   logActivity(`Added certificate: ${certData.title}`);
 
+  contentState.certifications.allItems = data.certifications;
+  contentState.certifications.currentPage = 1;
+
   closeCertForm();
-  loadCertifications(data.certifications);
+  applySort('certifications');
   showNotification('✓ Certificate added successfully!');
 }
 
@@ -866,7 +885,9 @@ function deleteCert(id) {
     data.certifications = data.certifications.filter(c => c.id !== id);
     saveAdminData(data);
     logActivity(`Deleted certificate: ${cert?.title}`);
-    loadCertifications(data.certifications);
+    contentState.certifications.allItems = data.certifications;
+    contentState.certifications.currentPage = 1;
+    applySort('certifications');
     showNotification('✓ Certificate deleted successfully!');
   }
 }
@@ -915,8 +936,11 @@ async function handleBlogSubmit(e) {
   saveAdminData(data);
   logActivity(`Published blog: ${blogData.title}`);
 
+  contentState.blog.allItems = data.blog;
+  contentState.blog.currentPage = 1;
+
   closeBlogForm();
-  loadBlog(data.blog);
+  applySort('blog');
   showNotification('✓ Article published successfully!');
 }
 
@@ -951,7 +975,9 @@ function deleteBlog(id) {
     data.blog = data.blog.filter(b => b.id !== id);
     saveAdminData(data);
     logActivity(`Deleted blog: ${blog?.title}`);
-    loadBlog(data.blog);
+    contentState.blog.allItems = data.blog;
+    contentState.blog.currentPage = 1;
+    applySort('blog');
     showNotification('✓ Blog post deleted successfully!');
   }
 }
@@ -1030,8 +1056,11 @@ function handleSkillSubmit(e) {
   saveAdminData(data);
   logActivity(`Added skill: ${skillData.name}`);
 
+  contentState.skills.allItems = data.skills;
+  contentState.skills.currentPage = 1;
+
   closeSkillForm();
-  loadSkills(data.skills);
+  applySort('skills');
   showNotification('✓ Skill added successfully!');
 }
 
@@ -1067,7 +1096,9 @@ function deleteSkill(id) {
     data.skills = data.skills.filter(s => s.id !== id);
     saveAdminData(data);
     logActivity(`Deleted skill: ${skill?.name}`);
-    loadSkills(data.skills);
+    contentState.skills.allItems = data.skills;
+    contentState.skills.currentPage = 1;
+    applySort('skills');
     showNotification('✓ Skill deleted successfully!');
   }
 }
@@ -1117,8 +1148,11 @@ async function handleTestimonialSubmit(e) {
   saveAdminData(data);
   logActivity(`Added testimonial from ${testData.author}`);
 
+  contentState.testimonials.allItems = data.testimonials;
+  contentState.testimonials.currentPage = 1;
+
   closeTestimonialForm();
-  loadTestimonials(data.testimonials);
+  applySort('testimonials');
   showNotification('✓ Testimonial added successfully!');
 }
 
@@ -1153,7 +1187,9 @@ function deleteTestimonial(id) {
     data.testimonials = data.testimonials.filter(t => t.id !== id);
     saveAdminData(data);
     logActivity(`Deleted testimonial from ${test?.author}`);
-    loadTestimonials(data.testimonials);
+    contentState.testimonials.allItems = data.testimonials;
+    contentState.testimonials.currentPage = 1;
+    applySort('testimonials');
     showNotification('✓ Testimonial deleted successfully!');
   }
 }
@@ -1557,6 +1593,247 @@ function clearAllSelections(category) {
   document.querySelectorAll('.item-card.selected').forEach(card => {
     card.classList.remove('selected');
   });
+}
+
+// ===============================================
+// PHASE 2: SORTING & FILTERING
+// ===============================================
+
+// Current state of sorting/filtering
+const contentState = {
+  projects: {
+    sortBy: 'dateNew',
+    filterBy: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    allItems: []
+  },
+  blog: {
+    sortBy: 'dateNew',
+    filterBy: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    allItems: []
+  },
+  certifications: {
+    sortBy: 'dateNew',
+    filterBy: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    allItems: []
+  },
+  skills: {
+    sortBy: 'nameAZ',
+    filterBy: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    allItems: []
+  },
+  testimonials: {
+    sortBy: 'dateNew',
+    filterBy: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    allItems: []
+  }
+};
+
+// Handle sort change
+function handleSort(category) {
+  const state = contentState[category];
+  state.sortBy = document.getElementById(`${category}Sort`)?.value || 'dateNew';
+  state.itemsPerPage = parseInt(document.getElementById(`${category}PerPage`)?.value || 10);
+  state.currentPage = 1;
+  
+  applySort(category);
+}
+
+// Handle filter change
+function handleFilter(category) {
+  const state = contentState[category];
+  state.filterBy = document.getElementById(`${category}Filter`)?.value || '';
+  state.currentPage = 1;
+  
+  applyFilter(category);
+}
+
+// Apply sorting to items
+function applySort(category) {
+  const state = contentState[category];
+  const data = getAdminData();
+  let items = [...data[category]];
+  
+  // Apply filter first
+  if (state.filterBy && category !== 'testimonials') {
+    items = items.filter(item => {
+      if (category === 'projects') return item.category === state.filterBy;
+      if (category === 'blog') return item.category === state.filterBy;
+      if (category === 'certifications') return item.issuer === state.filterBy;
+      if (category === 'skills') return item.category === state.filterBy;
+      return true;
+    });
+  }
+  
+  // Apply sort
+  switch(state.sortBy) {
+    case 'dateNew':
+      items.sort((a, b) => new Date(b.createdAt || b.dateEarned || 0) - new Date(a.createdAt || a.dateEarned || 0));
+      break;
+    case 'dateOld':
+      items.sort((a, b) => new Date(a.createdAt || a.dateEarned || 0) - new Date(b.createdAt || b.dateEarned || 0));
+      break;
+    case 'nameAZ':
+      items.sort((a, b) => (a.title || a.name || a.author || '').localeCompare(b.title || b.name || b.author || ''));
+      break;
+    case 'nameZA':
+      items.sort((a, b) => (b.title || b.name || b.author || '').localeCompare(a.title || a.name || a.author || ''));
+      break;
+    case 'featured':
+      items.sort((a, b) => (b.featured || false) - (a.featured || false));
+      break;
+  }
+  
+  state.allItems = items;
+  displayPaginatedItems(category);
+}
+
+// Apply filtering to items
+function applyFilter(category) {
+  applySort(category); // Re-apply sort with new filter
+}
+
+// Display paginated items
+function displayPaginatedItems(category) {
+  const state = contentState[category];
+  const totalItems = state.allItems.length;
+  const totalPages = Math.ceil(totalItems / state.itemsPerPage);
+  
+  // Validate current page
+  if (state.currentPage > totalPages && totalPages > 0) {
+    state.currentPage = totalPages;
+  } else if (state.currentPage < 1) {
+    state.currentPage = 1;
+  }
+  
+  // Calculate start and end indices
+  const startIdx = (state.currentPage - 1) * state.itemsPerPage;
+  const endIdx = Math.min(startIdx + state.itemsPerPage, totalItems);
+  const paginatedItems = state.allItems.slice(startIdx, endIdx);
+  
+  // Update pagination info
+  updatePaginationUI(category, startIdx + 1, endIdx, totalItems, totalPages);
+  
+  // Load the paginated items
+  const loadFunction = {
+    projects: loadProjects,
+    blog: loadBlog,
+    certifications: loadCertifications,
+    skills: loadSkills,
+    testimonials: loadTestimonials
+  }[category];
+  
+  if (loadFunction) {
+    loadFunction(paginatedItems);
+  }
+}
+
+// Update pagination UI
+function updatePaginationUI(category, start, end, total, totalPages) {
+  const infoEl = document.getElementById(`paginationInfo${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  const textEl = document.getElementById(`paginationText${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  const buttonsEl = document.getElementById(`paginationButtons${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  
+  if (!infoEl || !textEl || !buttonsEl) {
+    // Fallback for projects (original IDs)
+    if (category === 'projects') {
+      const fallbackInfo = document.getElementById('paginationInfo');
+      const fallbackText = document.getElementById('paginationText');
+      const fallbackButtons = document.getElementById('paginationButtons');
+      if (fallbackInfo && fallbackText && fallbackButtons) {
+        if (total === 0) {
+          fallbackInfo.style.display = 'none';
+          return;
+        }
+        fallbackInfo.style.display = 'flex';
+        fallbackText.textContent = `Showing ${start}-${end} of ${total}`;
+        let html = generatePaginationHTML(category, totalPages);
+        fallbackButtons.innerHTML = html;
+      }
+    }
+    return;
+  }
+  
+  if (total === 0) {
+    infoEl.style.display = 'none';
+    return;
+  }
+  
+  infoEl.style.display = 'flex';
+  textEl.textContent = `Showing ${start}-${end} of ${total}`;
+  
+  // Generate pagination buttons
+  let html = generatePaginationHTML(category, totalPages);
+  buttonsEl.innerHTML = html;
+}
+
+function generatePaginationHTML(category, totalPages) {
+  let html = '';
+  
+  // Previous button
+  if (contentState[category].currentPage > 1) {
+    html += `<button class="pagination-btn" onclick="goToPage('${category}', ${contentState[category].currentPage - 1})">← Previous</button>`;
+  } else {
+    html += `<button class="pagination-btn" disabled>← Previous</button>`;
+  }
+  
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= contentState[category].currentPage - 1 && i <= contentState[category].currentPage + 1)) {
+      const isActive = i === contentState[category].currentPage;
+      html += `<button class="pagination-btn ${isActive ? 'active' : ''}" onclick="goToPage('${category}', ${i})">${i}</button>`;
+    } else if (i === contentState[category].currentPage - 2 || i === contentState[category].currentPage + 2) {
+      html += `<span style="color: var(--text-secondary);">...</span>`;
+    }
+  }
+  
+  // Next button
+  if (contentState[category].currentPage < totalPages) {
+    html += `<button class="pagination-btn" onclick="goToPage('${category}', ${contentState[category].currentPage + 1})">Next →</button>`;
+  } else {
+    html += `<button class="pagination-btn" disabled>Next →</button>`;
+  }
+  
+  return html;
+}
+
+// Go to specific page
+function goToPage(category, pageNum) {
+  contentState[category].currentPage = pageNum;
+  displayPaginatedItems(category);
+}
+
+// Reset sort and filter
+function resetSortFilter(category) {
+  contentState[category] = {
+    sortBy: category === 'skills' ? 'nameAZ' : 'dateNew',
+    filterBy: '',
+    currentPage: 1,
+    itemsPerPage: 10,
+    allItems: []
+  };
+  
+  // Reset form elements
+  if (document.getElementById(`${category}Sort`)) {
+    document.getElementById(`${category}Sort`).value = contentState[category].sortBy;
+  }
+  if (document.getElementById(`${category}Filter`)) {
+    document.getElementById(`${category}Filter`).value = '';
+  }
+  if (document.getElementById(`${category}PerPage`)) {
+    document.getElementById(`${category}PerPage`).value = 10;
+  }
+  
+  applySort(category);
 }
 
 // ===============================================

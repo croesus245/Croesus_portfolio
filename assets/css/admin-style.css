@@ -918,8 +918,130 @@ body {
 }
 
 /* ===============================================
-   PHASE 2: BULK ACTIONS
+   PHASE 2: SORTING & FILTERING
    ============================================== */
+
+.sort-filter-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 60, 0, 0.05);
+  border: 1px solid rgba(255, 60, 0, 0.15);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.sort-control,
+.filter-control,
+.pagination-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sort-control label,
+.filter-control label,
+.pagination-control label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sort-control select,
+.filter-control select,
+.pagination-control select {
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sort-control select:hover,
+.sort-control select:focus,
+.filter-control select:hover,
+.filter-control select:focus,
+.pagination-control select:hover,
+.pagination-control select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 8px rgba(255, 60, 0, 0.2);
+}
+
+.pagination-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 12px;
+  background: rgba(255, 60, 0, 0.05);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.pagination-btn {
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: rgba(255, 60, 0, 0.1);
+}
+
+.pagination-btn.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #000;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .sort-filter-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pagination-info {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .pagination-buttons {
+    justify-content: center;
+  }
+}
+
+/* ===============================================
+   END SORTING & FILTERING
+   ============================================== */
+
+
 
 .bulk-actions-toolbar {
   display: flex;

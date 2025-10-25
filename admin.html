@@ -209,10 +209,47 @@
             <button class="btn btn-primary" id="addProjectBtn">+ Add New Project</button>
           </div>
 
+          <!-- Sorting & Filtering Controls -->
+          <div class="sort-filter-controls">
+            <div class="sort-control">
+              <label for="projectSort">Sort by:</label>
+              <select id="projectSort" onchange="handleSort('projects')">
+                <option value="dateNew">Date (Newest First)</option>
+                <option value="dateOld">Date (Oldest First)</option>
+                <option value="nameAZ">Name (A-Z)</option>
+                <option value="nameZA">Name (Z-A)</option>
+                <option value="featured">Featured First</option>
+              </select>
+            </div>
+
+            <div class="filter-control">
+              <label for="projectFilter">Filter by:</label>
+              <select id="projectFilter" onchange="handleFilter('projects')">
+                <option value="">All Categories</option>
+                <option value="web development">Web Development</option>
+                <option value="web design">Web Design</option>
+                <option value="ai-ml">AI/ML</option>
+                <option value="gis">GIS/Geospatial</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="pagination-control">
+              <label for="projectPerPage">Per Page:</label>
+              <select id="projectPerPage" onchange="handleSort('projects')">
+                <option value="10">10 items</option>
+                <option value="25">25 items</option>
+                <option value="50">50 items</option>
+              </select>
+            </div>
+
+            <button class="btn" onclick="resetSortFilter('projects')" style="background: #f0f0f0; color: #333;">🔄 Reset</button>
+          </div>
+
           <!-- Bulk Actions Toolbar -->
           <div class="bulk-actions-toolbar" id="bulkActionsToolbar" style="display: none;">
             <div class="bulk-actions-info">
-              <input type="checkbox" id="selectAllProjects" class="select-all-checkbox">
+              <input type="checkbox" id="selectAllProjects" class="select-all-checkbox" onchange="toggleSelectAll('projects')">
               <span id="selectedCountProjects" class="selected-count">0 selected</span>
             </div>
             <div class="bulk-actions-buttons">
@@ -220,6 +257,12 @@
               <button class="btn" id="bulkExportProjects" onclick="bulkExportItems('projects')">📥 Export Selected</button>
               <button class="btn" onclick="clearAllSelections('projects')" style="background: #f0f0f0; color: #333;">✕ Cancel</button>
             </div>
+          </div>
+
+          <!-- Pagination Info -->
+          <div class="pagination-info" id="paginationInfo" style="display: none;">
+            <span id="paginationText">Showing 1-10 of 50</span>
+            <div class="pagination-buttons" id="paginationButtons"></div>
           </div>
 
           <!-- Projects List -->
@@ -313,6 +356,48 @@
             <button class="btn btn-primary" id="addCertBtn">+ Add New Certificate</button>
           </div>
 
+          <!-- Sorting & Filtering Controls -->
+          <div class="sort-filter-controls">
+            <div class="sort-control">
+              <label for="certificationsSort">Sort by:</label>
+              <select id="certificationsSort" onchange="handleSort('certifications')">
+                <option value="dateNew">Date (Newest First)</option>
+                <option value="dateOld">Date (Oldest First)</option>
+                <option value="nameAZ">Title (A-Z)</option>
+                <option value="nameZA">Title (Z-A)</option>
+              </select>
+            </div>
+
+            <div class="filter-control">
+              <label for="certificationsFilter">Filter by:</label>
+              <select id="certificationsFilter" onchange="handleFilter('certifications')">
+                <option value="">All Issuers</option>
+                <option value="Coursera">Coursera</option>
+                <option value="LinkedIn Learning">LinkedIn Learning</option>
+                <option value="Udemy">Udemy</option>
+                <option value="edX">edX</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="pagination-control">
+              <label for="certificationsPerPage">Per Page:</label>
+              <select id="certificationsPerPage" onchange="handleSort('certifications')">
+                <option value="10">10 items</option>
+                <option value="25">25 items</option>
+                <option value="50">50 items</option>
+              </select>
+            </div>
+
+            <button class="btn" onclick="resetSortFilter('certifications')" style="background: #f0f0f0; color: #333;">🔄 Reset</button>
+          </div>
+
+          <!-- Pagination Info -->
+          <div class="pagination-info" id="paginationInfoCertifications" style="display: none;">
+            <span id="paginationTextCertifications">Showing 1-10 of 50</span>
+            <div class="pagination-buttons" id="paginationButtonsCertifications"></div>
+          </div>
+
           <div class="certifications-list" id="certificationsList">
             <p class="empty-state">No certifications added yet.</p>
           </div>
@@ -366,6 +451,48 @@
           <div class="content-header">
             <h2>Manage Blog Posts</h2>
             <button class="btn btn-primary" id="addBlogBtn">+ Write New Article</button>
+          </div>
+
+          <!-- Sorting & Filtering Controls -->
+          <div class="sort-filter-controls">
+            <div class="sort-control">
+              <label for="blogSort">Sort by:</label>
+              <select id="blogSort" onchange="handleSort('blog')">
+                <option value="dateNew">Date (Newest First)</option>
+                <option value="dateOld">Date (Oldest First)</option>
+                <option value="nameAZ">Title (A-Z)</option>
+                <option value="nameZA">Title (Z-A)</option>
+              </select>
+            </div>
+
+            <div class="filter-control">
+              <label for="blogFilter">Filter by:</label>
+              <select id="blogFilter" onchange="handleFilter('blog')">
+                <option value="">All Categories</option>
+                <option value="tech">Tech</option>
+                <option value="gis">GIS</option>
+                <option value="career">Career</option>
+                <option value="tutorial">Tutorial</option>
+                <option value="personal">Personal</option>
+              </select>
+            </div>
+
+            <div class="pagination-control">
+              <label for="blogPerPage">Per Page:</label>
+              <select id="blogPerPage" onchange="handleSort('blog')">
+                <option value="10">10 items</option>
+                <option value="25">25 items</option>
+                <option value="50">50 items</option>
+              </select>
+            </div>
+
+            <button class="btn" onclick="resetSortFilter('blog')" style="background: #f0f0f0; color: #333;">🔄 Reset</button>
+          </div>
+
+          <!-- Pagination Info -->
+          <div class="pagination-info" id="paginationInfoBlog" style="display: none;">
+            <span id="paginationTextBlog">Showing 1-10 of 50</span>
+            <div class="pagination-buttons" id="paginationButtonsBlog"></div>
           </div>
 
           <div class="blog-list" id="blogList">
@@ -432,6 +559,47 @@
             <button class="btn btn-primary" id="addSkillBtn">+ Add Skill</button>
           </div>
 
+          <!-- Sorting & Filtering Controls -->
+          <div class="sort-filter-controls">
+            <div class="sort-control">
+              <label for="skillsSort">Sort by:</label>
+              <select id="skillsSort" onchange="handleSort('skills')">
+                <option value="nameAZ">Name (A-Z)</option>
+                <option value="nameZA">Name (Z-A)</option>
+                <option value="featured">Featured First</option>
+              </select>
+            </div>
+
+            <div class="filter-control">
+              <label for="skillsFilter">Filter by:</label>
+              <select id="skillsFilter" onchange="handleFilter('skills')">
+                <option value="">All Categories</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Backend">Backend</option>
+                <option value="GIS">GIS</option>
+                <option value="Database">Database</option>
+                <option value="Tools">Tools</option>
+              </select>
+            </div>
+
+            <div class="pagination-control">
+              <label for="skillsPerPage">Per Page:</label>
+              <select id="skillsPerPage" onchange="handleSort('skills')">
+                <option value="10">10 items</option>
+                <option value="25">25 items</option>
+                <option value="50">50 items</option>
+              </select>
+            </div>
+
+            <button class="btn" onclick="resetSortFilter('skills')" style="background: #f0f0f0; color: #333;">🔄 Reset</button>
+          </div>
+
+          <!-- Pagination Info -->
+          <div class="pagination-info" id="paginationInfoSkills" style="display: none;">
+            <span id="paginationTextSkills">Showing 1-10 of 50</span>
+            <div class="pagination-buttons" id="paginationButtonsSkills"></div>
+          </div>
+
           <div class="skills-list" id="skillsList">
             <p class="empty-state">No skills added yet.</p>
           </div>
@@ -482,6 +650,37 @@
           <div class="content-header">
             <h2>Manage Testimonials</h2>
             <button class="btn btn-primary" id="addTestimonialBtn">+ Add Testimonial</button>
+          </div>
+
+          <!-- Sorting & Filtering Controls -->
+          <div class="sort-filter-controls">
+            <div class="sort-control">
+              <label for="testimonialsSort">Sort by:</label>
+              <select id="testimonialsSort" onchange="handleSort('testimonials')">
+                <option value="dateNew">Date (Newest First)</option>
+                <option value="dateOld">Date (Oldest First)</option>
+                <option value="nameAZ">Author (A-Z)</option>
+                <option value="nameZA">Author (Z-A)</option>
+                <option value="featured">Featured First</option>
+              </select>
+            </div>
+
+            <div class="pagination-control">
+              <label for="testimonialsPerPage">Per Page:</label>
+              <select id="testimonialsPerPage" onchange="handleSort('testimonials')">
+                <option value="10">10 items</option>
+                <option value="25">25 items</option>
+                <option value="50">50 items</option>
+              </select>
+            </div>
+
+            <button class="btn" onclick="resetSortFilter('testimonials')" style="background: #f0f0f0; color: #333;">🔄 Reset</button>
+          </div>
+
+          <!-- Pagination Info -->
+          <div class="pagination-info" id="paginationInfoTestimonials" style="display: none;">
+            <span id="paginationTextTestimonials">Showing 1-10 of 50</span>
+            <div class="pagination-buttons" id="paginationButtonsTestimonials"></div>
           </div>
 
           <div class="testimonials-list" id="testimonialsList">
