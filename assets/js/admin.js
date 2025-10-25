@@ -657,10 +657,16 @@ async function handleProjectSubmit(e) {
     createdAt: new Date().toISOString()
   };
 
-  // Handle image upload
+  // Handle image upload with optimization
   const imageFile = formData.get('image');
   if (imageFile && imageFile.size > 0) {
-    projectData.image = await fileToBase64(imageFile);
+    // Show optimizer and wait for user choice
+    const optimizedImage = await new Promise((resolve) => {
+      showImageOptimizer(imageFile, (compressed) => {
+        resolve(compressed);
+      });
+    });
+    projectData.image = await fileToBase64(optimizedImage);
   }
 
   const data = getAdminData();
@@ -750,7 +756,13 @@ function editProject(id) {
 
       const imageFile = formData.get('image');
       if (imageFile && imageFile.size > 0) {
-        project.image = await fileToBase64(imageFile);
+        // Show optimizer and wait for user choice
+        const optimizedImage = await new Promise((resolve) => {
+          showImageOptimizer(imageFile, (compressed) => {
+            resolve(compressed);
+          });
+        });
+        project.image = await fileToBase64(optimizedImage);
       }
 
       saveAdminData(data);
@@ -793,7 +805,13 @@ async function handleCertSubmit(e) {
 
   const imageFile = formData.get('image');
   if (imageFile && imageFile.size > 0) {
-    certData.image = await fileToBase64(imageFile);
+    // Show optimizer and wait for user choice
+    const optimizedImage = await new Promise((resolve) => {
+      showImageOptimizer(imageFile, (compressed) => {
+        resolve(compressed);
+      });
+    });
+    certData.image = await fileToBase64(optimizedImage);
   }
 
   const data = getAdminData();
@@ -871,7 +889,13 @@ async function handleBlogSubmit(e) {
 
   const imageFile = formData.get('image');
   if (imageFile && imageFile.size > 0) {
-    blogData.image = await fileToBase64(imageFile);
+    // Show optimizer and wait for user choice
+    const optimizedImage = await new Promise((resolve) => {
+      showImageOptimizer(imageFile, (compressed) => {
+        resolve(compressed);
+      });
+    });
+    blogData.image = await fileToBase64(optimizedImage);
   }
 
   const data = getAdminData();
@@ -1067,7 +1091,13 @@ async function handleTestimonialSubmit(e) {
 
   const imageFile = formData.get('image');
   if (imageFile && imageFile.size > 0) {
-    testData.image = await fileToBase64(imageFile);
+    // Show optimizer and wait for user choice
+    const optimizedImage = await new Promise((resolve) => {
+      showImageOptimizer(imageFile, (compressed) => {
+        resolve(compressed);
+      });
+    });
+    testData.image = await fileToBase64(optimizedImage);
   }
 
   const data = getAdminData();
@@ -1194,6 +1224,156 @@ function handlePasswordChange(e) {
   logActivity('Changed admin password');
   closeChangePasswordForm();
   showNotification('✓ Password changed successfully!');
+}
+
+// ===============================================
+// ===============================================
+// PHASE 2: IMAGE OPTIMIZATION
+// ===============================================
+
+// Compress image using Canvas API
+async function compressImage(file, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas dimensions
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        // Draw image
+        ctx.drawImage(img, 0, 0);
+        
+        // Convert to compressed format
+        canvas.toBlob(
+          (blob) => {
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now()
+            });
+            resolve(compressedFile);
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      
+      img.onerror = () => reject(new Error('Failed to load image'));
+    };
+    
+    reader.onerror = () => reject(new Error('Failed to read file'));
+  });
+}
+
+// Calculate file size in KB
+function getFileSizeKB(file) {
+  return (file.size / 1024).toFixed(2);
+}
+
+// Calculate compression percentage
+function getCompressionPercent(originalSize, compressedSize) {
+  return Math.round(((originalSize - compressedSize) / originalSize) * 100);
+}
+
+// Show image optimization modal
+function showImageOptimizer(imageFile, callback) {
+  // Create modal if not exists
+  let modal = document.getElementById('imageOptimizerModal');
+  if (!modal) {
+    const modalHTML = `
+      <div id="imageOptimizerModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; font-size: 22px;">Image Optimization</h2>
+            <button type="button" id="closeOptimizerModal" class="close-btn" style="font-size: 28px; cursor: pointer; border: none; background: none; color: #666;">×</button>
+          </div>
+          
+          <div id="optimizerContent" style="margin-bottom: 20px;">
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+              <div style="font-size: 12px; color: #666; margin-bottom: 5px;">ORIGINAL SIZE</div>
+              <div style="font-size: 24px; font-weight: bold; color: #333;" id="originalSizeDisplay">0 KB</div>
+            </div>
+            
+            <div style="font-size: 20px; text-align: center; color: #999; margin: 15px 0;">↓</div>
+            
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+              <div style="font-size: 12px; color: #666; margin-bottom: 5px;">QUALITY SETTING</div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="range" id="qualitySlider" min="50" max="100" value="85" style="flex: 1;">
+                <span id="qualityValue" style="font-size: 18px; font-weight: bold; color: #ff3c00; min-width: 40px;">85%</span>
+              </div>
+            </div>
+            
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+              <div style="font-size: 12px; color: #666; margin-bottom: 5px;">OPTIMIZED SIZE</div>
+              <div style="font-size: 24px; font-weight: bold; color: #ff3c00;" id="compressedSizeDisplay">0 KB</div>
+              <div style="font-size: 12px; color: #666; margin-top: 5px;" id="savingsDisplay">Calculating...</div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button type="button" id="cancelOptimization" class="btn" style="background: #f0f0f0; color: #333;">Cancel</button>
+            <button type="button" id="confirmOptimization" class="btn" style="background: #ff3c00; color: white;">Use Optimized</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    modal = document.getElementById('imageOptimizerModal');
+    
+    // Event listeners
+    document.getElementById('closeOptimizerModal').addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+    document.getElementById('cancelOptimization').addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+    document.getElementById('qualitySlider').addEventListener('input', async (e) => {
+      const quality = e.target.value / 100;
+      document.getElementById('qualityValue').textContent = e.target.value + '%';
+      updateCompressionPreview(imageFile, quality);
+    });
+  }
+  
+  // Show modal and update preview
+  modal.style.display = 'flex';
+  document.getElementById('originalSizeDisplay').textContent = getFileSizeKB(imageFile) + ' KB';
+  document.getElementById('qualitySlider').value = 85;
+  document.getElementById('qualityValue').textContent = '85%';
+  
+  updateCompressionPreview(imageFile, 0.85);
+  
+  // Handle confirmation
+  document.getElementById('confirmOptimization').onclick = async () => {
+    const quality = document.getElementById('qualitySlider').value / 100;
+    const compressedImage = await compressImage(imageFile, quality);
+    modal.style.display = 'none';
+    callback(compressedImage);
+  };
+}
+
+// Update compression preview in real-time
+async function updateCompressionPreview(file, quality) {
+  try {
+    const compressed = await compressImage(file, quality);
+    const compressedSize = getFileSizeKB(compressed);
+    const originalSize = parseFloat(getFileSizeKB(file));
+    const savings = getCompressionPercent(file.size, compressed.size);
+    
+    document.getElementById('compressedSizeDisplay').textContent = compressedSize + ' KB';
+    document.getElementById('savingsDisplay').textContent = `${savings}% smaller`;
+  } catch (error) {
+    document.getElementById('compressedSizeDisplay').textContent = 'Error';
+    document.getElementById('savingsDisplay').textContent = error.message;
+  }
 }
 
 // ===============================================
