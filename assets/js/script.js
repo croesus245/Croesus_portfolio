@@ -153,13 +153,16 @@ navigationLinks.forEach(function(link, idx) {
 
 
 
-// Typing animation for roles
-const roles = [
+// Typing animation for roles - Updated with new roles
+const rotatingRoles = [
   "AI/ML Engineer",
   "Python Developer",
-  "Visual Creator",
-  "Geospatial Analyst",
-  "Web Developer"
+  "GIS Specialist",
+  "Surveying Expert",
+  "Visual Effects Artist",
+  "Geoinformatics Student",
+  "Backend Developer",
+  "Data Analyst"
 ];
 let roleIndex = 0;
 let charIndex = 0;
@@ -169,10 +172,10 @@ const deletingSpeed = 50;
 const pauseDuration = 2000;
 
 function typeRole() {
-  const typingText = document.getElementById('typing-text');
+  const typingText = document.getElementById('typing-text') || document.getElementById('rotating-role');
   if (!typingText) return;
   
-  const currentRole = roles[roleIndex];
+  const currentRole = rotatingRoles[roleIndex];
   
   if (isDeleting) {
     typingText.textContent = currentRole.substring(0, charIndex - 1);
@@ -190,7 +193,7 @@ function typeRole() {
   
   if (isDeleting && charIndex === 0) {
     isDeleting = false;
-    roleIndex = (roleIndex + 1) % roles.length;
+    roleIndex = (roleIndex + 1) % rotatingRoles.length;
   }
   
   const speed = isDeleting ? deletingSpeed : typingSpeed;
@@ -198,7 +201,7 @@ function typeRole() {
 }
 
 // Start typing animation
-if (document.getElementById('typing-text')) {
+if (document.getElementById('typing-text') || document.getElementById('rotating-role')) {
   setTimeout(typeRole, 1000);
 }
 
@@ -275,3 +278,421 @@ if (isTouchDevice) {
     });
   });
 }
+
+
+
+/*-----------------------------------*\
+  #ADVANCED FEATURES
+\*-----------------------------------*/
+
+/**
+ * Preloader
+ */
+window.addEventListener('load', function() {
+  const preloader = document.querySelector('.preloader');
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add('hidden');
+      // Remove from DOM after transition
+      setTimeout(() => {
+        preloader.remove();
+      }, 500);
+    }, 1000);
+  }
+});
+
+/**
+ * Scroll Progress Bar
+ */
+const scrollProgress = document.getElementById('scroll-progress');
+if (scrollProgress) {
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    scrollProgress.style.width = progress + '%';
+  });
+}
+
+/**
+ * Theme Toggle
+ */
+const themeToggle = document.querySelector('.theme-toggle');
+const body = document.body;
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+  body.classList.add('light-theme');
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    body.classList.toggle('light-theme');
+    const isLight = body.classList.contains('light-theme');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    
+    // Animate button
+    themeToggle.style.transform = 'rotate(360deg) scale(0.8)';
+    setTimeout(() => {
+      themeToggle.style.transform = '';
+    }, 300);
+  });
+}
+
+/**
+ * Back to Top Button
+ */
+const backToTop = document.querySelector('.back-to-top');
+if (backToTop) {
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      backToTop.classList.add('show');
+    } else {
+      backToTop.classList.remove('show');
+    }
+  });
+
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+
+/**
+ * Scroll Reveal Animation
+ */
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOptions);
+
+// Observe all animation elements
+document.addEventListener('DOMContentLoaded', () => {
+  const animatedElements = document.querySelectorAll(
+    '.fade-in, .slide-in-left, .slide-in-right, .zoom-in'
+  );
+  animatedElements.forEach(el => observer.observe(el));
+});
+
+/**
+ * Enhanced Portfolio Filter with Counts
+ */
+function updateFilterCounts() {
+  const filterButtons = document.querySelectorAll('[data-filter-btn]');
+  const projectItems = document.querySelectorAll('[data-filter-item]');
+
+  filterButtons.forEach(btn => {
+    const filterValue = btn.textContent.trim().toLowerCase();
+    let count = 0;
+
+    if (filterValue === 'all') {
+      count = projectItems.length;
+    } else {
+      projectItems.forEach(item => {
+        const category = item.dataset.category?.toLowerCase();
+        if (category === filterValue) count++;
+      });
+    }
+
+    // Add or update count badge
+    let badge = btn.querySelector('.count-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'count-badge';
+      btn.parentElement.style.position = 'relative';
+      btn.parentElement.appendChild(badge);
+    }
+    badge.textContent = count;
+  });
+}
+
+// Call on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateFilterCounts);
+} else {
+  updateFilterCounts();
+}
+
+/**
+ * Enhanced Form Validation
+ */
+const contactForm = document.querySelector('[data-form]');
+if (contactForm) {
+  const formInputs = contactForm.querySelectorAll('[data-form-input]');
+  const formBtn = contactForm.querySelector('[data-form-btn]');
+
+  // Real-time validation
+  formInputs.forEach(input => {
+    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('input', () => {
+      if (input.classList.contains('error')) {
+        validateField(input);
+      }
+      checkFormValidity();
+    });
+  });
+
+  function validateField(field) {
+    const value = field.value.trim();
+    let isValid = true;
+    let errorMsg = '';
+
+    // Remove previous error
+    const existingError = field.parentElement.querySelector('.error-message');
+    if (existingError) existingError.remove();
+    field.classList.remove('error', 'success');
+
+    if (field.name === 'fullname') {
+      if (value.length < 2) {
+        isValid = false;
+        errorMsg = 'Name must be at least 2 characters';
+      }
+    } else if (field.name === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        isValid = false;
+        errorMsg = 'Please enter a valid email address';
+      }
+    } else if (field.name === 'message') {
+      if (value.length < 10) {
+        isValid = false;
+        errorMsg = 'Message must be at least 10 characters';
+      }
+    }
+
+    if (!isValid) {
+      field.classList.add('error');
+      const errorElement = document.createElement('span');
+      errorElement.className = 'error-message';
+      errorElement.textContent = errorMsg;
+      field.parentElement.appendChild(errorElement);
+    } else if (value) {
+      field.classList.add('success');
+    }
+
+    return isValid;
+  }
+
+  function checkFormValidity() {
+    let allValid = true;
+    formInputs.forEach(input => {
+      if (!input.value.trim() || input.classList.contains('error')) {
+        allValid = false;
+      }
+    });
+    if (formBtn) formBtn.disabled = !allValid;
+  }
+
+  // Enhanced form submission
+  contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Validate all fields
+    let isFormValid = true;
+    formInputs.forEach(input => {
+      if (!validateField(input)) isFormValid = false;
+    });
+
+    if (!isFormValid) return;
+
+    // Show loading state
+    const originalText = formBtn.innerHTML;
+    formBtn.innerHTML = '<span>Sending...</span>';
+    formBtn.disabled = true;
+
+    const formData = new FormData(contactForm);
+    const formValues = {
+      fullname: formData.get('fullname'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+    };
+
+    emailjs.send("service_j8ldhiq", "template_lxkd1sw", formValues)
+      .then((response) => {
+        // Success message
+        const feedback = document.getElementById('form-feedback');
+        feedback.innerHTML = `
+          <div class="success-message">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>Message sent successfully! I'll get back to you soon.</span>
+          </div>
+        `;
+        feedback.style.color = '#27ae60';
+        
+        contactForm.reset();
+        formInputs.forEach(input => input.classList.remove('success', 'error'));
+        
+        // Reset button after delay
+        setTimeout(() => {
+          formBtn.innerHTML = originalText;
+          formBtn.disabled = true;
+        }, 2000);
+      })
+      .catch((error) => {
+        const feedback = document.getElementById('form-feedback');
+        feedback.innerHTML = `
+          <div class="error-message">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>Failed to send message. Please try again.</span>
+          </div>
+        `;
+        feedback.style.color = '#e74c3c';
+        console.error("EmailJS Error:", error);
+        
+        formBtn.innerHTML = originalText;
+        formBtn.disabled = false;
+      });
+  });
+}
+
+/**
+ * Skills Progress Animation
+ */
+const skillsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const progressBar = entry.target.querySelector('.skill-progress-fill');
+      if (progressBar) {
+        const width = progressBar.style.width;
+        progressBar.style.width = '0%';
+        setTimeout(() => {
+          progressBar.style.width = width;
+        }, 100);
+      }
+      skillsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.skills-item').forEach(item => {
+  skillsObserver.observe(item);
+});
+
+/**
+ * Typing Animation Effect
+ */
+function typeWriter(element, text, speed = 100) {
+  let i = 0;
+  element.textContent = '';
+  
+  function type() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    } else {
+      element.classList.remove('typing-text');
+    }
+  }
+  
+  type();
+}
+
+// Apply to title if needed
+const titleElement = document.querySelector('.name');
+if (titleElement && window.innerWidth > 768) {
+  const originalText = titleElement.textContent;
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      titleElement.classList.add('typing-text');
+      typeWriter(titleElement, originalText, 80);
+    }, 1500);
+  });
+}
+
+/**
+ * Parallax Effect
+ */
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      const scrolled = window.pageYOffset;
+      const parallaxElements = document.querySelectorAll('.parallax');
+      
+      parallaxElements.forEach(el => {
+        const speed = el.dataset.speed || 0.5;
+        el.style.transform = `translateY(${scrolled * speed}px)`;
+      });
+      
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+/**
+ * Enhanced GitHub Stats Loading
+ */
+document.querySelectorAll('.github-stat-item img').forEach(img => {
+  img.addEventListener('load', function() {
+    this.style.opacity = '0';
+    setTimeout(() => {
+      this.style.transition = 'opacity 0.5s ease';
+      this.style.opacity = '1';
+    }, 100);
+  });
+});
+
+/**
+ * Smooth Scroll for Anchor Links
+ */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    const href = this.getAttribute('href');
+    if (href !== '#' && document.querySelector(href)) {
+      e.preventDefault();
+      document.querySelector(href).scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+
+/**
+ * Performance Optimization: Debounce Function
+ */
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Apply debouncing to scroll and resize events
+const debouncedScroll = debounce(() => {
+  console.log('Scroll event processed');
+}, 100);
+
+const debouncedResize = debounce(() => {
+  updateFilterCounts();
+}, 250);
+
+window.addEventListener('scroll', debouncedScroll);
+window.addEventListener('resize', debouncedResize);
+
+/**
+ * Console Easter Egg
+ */
+console.log('%c👋 Hello, Developer!', 'color: #ff3c00; font-size: 20px; font-weight: bold;');
+console.log('%cWelcome to my portfolio. Feel free to explore the code!', 'color: #ff5722; font-size: 14px;');
+console.log('%c💼 Looking for a developer? Let\'s connect!', 'color: #ff3c00; font-size: 14px;');
+
