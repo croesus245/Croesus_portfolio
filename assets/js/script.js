@@ -63,7 +63,7 @@ if (overlay) overlay.addEventListener("click", testimonialsModalFunc);
 // custom select variables
 const select = document.querySelector("[data-select]");
 const selectItems = document.querySelectorAll("[data-select-item]");
-const selectValue = document.querySelector("[data-selvaluect-value]");
+const selectValue = document.querySelector("[data-select-value]");
 const filterBtn = document.querySelectorAll("[data-filter-btn]");
 
 if (select) {
@@ -679,7 +679,7 @@ function debounce(func, wait) {
 
 // Apply debouncing to scroll and resize events
 const debouncedScroll = debounce(() => {
-  console.log('Scroll event processed');
+  // Scroll handler - can add future functionality here
 }, 100);
 
 const debouncedResize = debounce(() => {
